@@ -4,15 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maxx Energy SecDevOps</title>
+    <title>Maxx Energy - Log In</title>
     <link rel="stylesheet" href="static/styles.css">
 </head>
 
 <body>
     <div class="login-container">
-        <img src="static/images/maxx-logo.png" alt="Company Logo" class="logo">
-        <div class="brand-header">Maxx Energy SecDevOps</div>
-        <h1>Login</h1>
+        <img src="static/images/maxx-logo.png" alt="Maxx Energy Logo" class="logo">
+        <div class="brand-header">Maxx Energy Login</div>
         <form id="loginForm" action="/login" method="POST">
             <div class="form-group">
                 <label for="username">Username:</label>
@@ -22,7 +21,7 @@
                 <label for="password">Password:</label>
                 <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit">Login</button>
+            <button type="submit" class="button">Log In</button>
         </form>
     </div>
 
@@ -33,14 +32,15 @@
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
 
-            const unsafePattern = /<|>|'|"|;|--|\b(OR|AND|SELECT|DROP|INSERT|DELETE|UPDATE|WHERE)\b/i;
-
+            // Check if username and password are empty
             if (username === '' || password === '') {
                 alert('Username and password are required.');
                 event.preventDefault();
                 return;
             }
 
+            // Sanitize inputs
+            const unsafePattern = /<|>|'|"|;|--|\b(OR|AND|SELECT|DROP|INSERT|DELETE|UPDATE|WHERE)\b/i;
             if (unsafePattern.test(username) || unsafePattern.test(password)) {
                 alert('Invalid characters detected in username or password.');
                 event.preventDefault();

@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint
+from flask import Flask
 from routes import home_bp as home, login_bp as login
 
 app = Flask(__name__)
