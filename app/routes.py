@@ -7,7 +7,7 @@ login_bp = Blueprint('login', __name__)
 # default route
 @home_bp.route('/')
 def home():
-    try: return render_template('index.html')
+    try: return render_template('app/templates/index.html')
     except TemplateNotFound: 
         abort(404)
 
@@ -15,7 +15,7 @@ def home():
 @login_bp.route('/login', methods=['POST'])
 def login():
     try:
-        return render_template('login.html')
+        return render_template('app/templates/login.html')
     except TemplateNotFound: 
         abort(404)
     
