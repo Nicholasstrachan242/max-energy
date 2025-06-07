@@ -21,16 +21,14 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
-
-    from app.auth import auth_bp as auth
-    from app.routes import home_bp as home, login_bp as login
-
-    app.register_blueprint(auth)
-    app.register_blueprint(home, url_prefix='/')
+    
+    from app.general.home import home_bp as home
+    #from app.auth.auth import auth_bp as auth
+    from app.auth.auth import login_bp as login
+    
+    app.register_blueprint(home)
+    #app.register_blueprint(auth)
     app.register_blueprint(login)
 
-
-
     return app
-
 

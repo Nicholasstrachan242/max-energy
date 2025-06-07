@@ -4,24 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maxx Energy</title>
+    <title>Maxx Energy - Log In</title>
     <link rel="stylesheet" href="static/styles.css">
+    <script src="static/submit.js"></script>
 </head>
 
 <body>
-    <h1>MAXX Energy Home Page</h1>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vel condimentum nibh. Nam sodales est et orci
-        tincidunt
-        convallis. Maecenas neque ex, feugiat quis condimentum id, vehicula ut nibh. Vestibulum venenatis iaculis odio
-        varius
-        aliquet. Vivamus non ex nisl. Ut imperdiet sed nisl volutpat sodales. Sed tempus orci at lorem dignissim
-        rhoncus.</p>
-    <a href="/login" class='button'>Log In HERE</a>
-</body>
-
-<!-- Login below has been moved to auth/templates/login.html -->
-<!--
-<body>
+    <div>
+        <a href="{{ url_for('home.home_page') }}" class="home-button">Back to Home</a>
+    </div>
     <div class="login-container">
         <img src="static/images/maxx-logo.png" alt="Maxx Energy Logo" class="logo">
         <div class="brand-header">Maxx Energy Login</div>
@@ -38,6 +29,5 @@
         </form>
     </div>
 </body>
--->
 
 </html>
