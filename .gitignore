@@ -5,9 +5,7 @@ __pycache__/
 
 # virtual environment (local)
 venv/
-.env/
-.vscode/
+app/.env/
 
 # log files
 *.log
-
