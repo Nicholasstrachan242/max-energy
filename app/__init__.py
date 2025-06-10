@@ -1,8 +1,13 @@
 import os
+import pymysql
 from flask import Flask
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 
+# Load environment variables
+load_dotenv()
+
+# initialize SQLAlchemy
 db = SQLAlchemy()
 
 def create_app(test_config=None):
@@ -13,29 +18,29 @@ def create_app(test_config=None):
     TESTING = True
     # ================================================
 
+    # configure db connection for test and prod
     if TESTING:
         config = {
-        'SECRET_KEY': os.getenv('SECRET_KEY'),
+            # USE LOCAL MYSQL SERVER
+            'SECRET_KEY': os.getenv('SECRET_KEY'),
+            'SQLALCHEMY_DATABASE_URI': (
+                f"mysql+pymysql://{os.getenv('TEST_DB_USER')}:{os.getenv('TEST_DB_PASS')}"
+                f"@{os.getenv('TEST_DB_HOST')}:{os.getenv('TEST_DB_PORT')}/{os.getenv('TEST_DB_NAME')}"
+            ),
+            'SQLALCHEMY_TRACK_MODIFICATIONS': False
     }
     else:
         config = {
-        'SECRET_KEY': os.getenv('SECRET_KEY'),
-        'SQLALCHEMY_DATABASE_URI': (
-            f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
-            f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
-        ),
-        'SQLALCHEMY_TRACK_MODIFICATIONS': False
-    }
+            # PRODUCTION CONFIG HERE
+        }
 
     # pass in config
     app.config.from_mapping(config)
 
-    # initialize db
-    #try:
-        #db.init_app(app)
-    #except Exception as e:
-    #    print(f"Error initializing database: {e}")
-    #    raise e
+    # initialize the app with the extension
+    db.init_app(app)
+
+    print('DB connection established.')
 
     # check if instance folder exists
     try:

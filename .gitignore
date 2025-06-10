@@ -1,15 +1,23 @@
+# ignore local files
+
 # python cache files
 __pycache__/
 *.pvc
 *.pyo
 
 # virtual environment (local)
+.venv/
+**/.venv/
 venv/
 **/venv/    
 
 # environment variables
 .env
 **/.env
+app/.env
 
 # log files
 *.log
+
+#instance files
+/instance/
