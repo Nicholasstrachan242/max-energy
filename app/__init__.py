@@ -1,34 +1,53 @@
 import os
 from flask import Flask
+from dotenv import load_dotenv
+from flask_sqlalchemy import SQLAlchemy
 
+db = SQLAlchemy()
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        # DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
-    )
 
-    if test_config is None:
-        # load instance config if it exists when not testing.
-        app.config.from_pyfile('config.py', silent=True)
+    # TESTING FLAG
+    # ================================================
+    TESTING = True
+    # ================================================
+
+    if TESTING:
+        config = {
+        'SECRET_KEY': os.getenv('SECRET_KEY'),
+    }
     else:
-        # load the test config if passed in.
-        app.config.from_mapping(test_config)
+        config = {
+        'SECRET_KEY': os.getenv('SECRET_KEY'),
+        'SQLALCHEMY_DATABASE_URI': (
+            f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
+            f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+        ),
+        'SQLALCHEMY_TRACK_MODIFICATIONS': False
+    }
 
-    # ensure the instance folder exists.
+    # pass in config
+    app.config.from_mapping(config)
+
+    # initialize db
+    #try:
+        #db.init_app(app)
+    #except Exception as e:
+    #    print(f"Error initializing database: {e}")
+    #    raise e
+
+    # check if instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
     
     from app.general.home import home_bp as home
-    #from app.auth.auth import auth_bp as auth
-    from app.auth.auth import login_bp as login
-    
+    from app.auth.auth import auth_bp as auth
+
     app.register_blueprint(home)
-    #app.register_blueprint(auth)
-    app.register_blueprint(login)
+    app.register_blueprint(auth)
 
     return app
 

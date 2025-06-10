@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Maxx Energy - Log In</title>
-    <link rel="stylesheet" href="static/styles.css">
-    <script src="static/submit.js"></script>
+    <link rel="stylesheet" href="../static/styles.css">
+    <script src="../static/submit.js"></script>
 </head>
 
 <body>
@@ -14,9 +14,9 @@
         <a href="{{ url_for('home.home_page') }}" class="home-button">Back to Home</a>
     </div>
     <div class="login-container">
-        <img src="static/images/maxx-logo.png" alt="Maxx Energy Logo" class="logo">
+        <img src="../static/images/maxx-logo.png" alt="Maxx Energy Logo" class="logo">
         <div class="brand-header">Maxx Energy Login</div>
-        <form id="loginForm" action="/login" method="POST">
+        <form id="loginForm" action="auth/login" method="POST">
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" required>

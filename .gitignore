@@ -1,2 +1,13 @@
-venv/
+# python cache files
 __pycache__/
+*.pvc
+*.pyo
+
+# virtual environment (local)
+venv/
+.env/
+.vscode/
+
+# log files
+*.log
+
