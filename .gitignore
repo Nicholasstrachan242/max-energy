@@ -1,0 +1,15 @@
+# python cache files
+__pycache__/
+*.pvc
+*.pyo
+
+# virtual environment (local)
+venv/
+**/venv/    
+
+# environment variables
+.env
+**/.env
+
+# log files
+*.log
