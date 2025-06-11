@@ -1,0 +1,34 @@
+from pydal import DAL, Field
+
+db = DAL('sqlite://storage.sqlite')
+
+db.define_table(
+    'role',
+    Field('name', unique=True),
+    format='%(name)s'
+)
+
+db.define_table(
+    'permission',
+    Field('name', unique=True),
+    format='%(name)s'
+)
+
+db.define_table(
+    'role_permission',
+    Field('role_id', 'reference role'),
+    Field('permission_id', 'reference permission'),
+    format='%(id)s'
+)
+
+db.define_table(
+    'user_role',
+    Field('user_id'),  # Replace with 'reference auth_user' if using web2py's auth
+    Field('role_id', 'reference role'),
+    format='%(id)s'
+)
+
+# Insert default roles if they do not exist
+for role_name in ['User', 'Employee', 'Admin']:
+    if not db(db.role.name == role_name).count():
+        db.role.insert(name=role_name)
