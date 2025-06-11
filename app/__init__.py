@@ -2,14 +2,18 @@ import os
 from flask import Flask
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase
 from flask_login import LoginManager
 from app.commands import register_commands
 
 # Load environment variables
 load_dotenv()
 
-# initialize SQLAlchemy and LoginManager
-db = SQLAlchemy()
+# initialize SQLAlchemy
+class Base(DeclarativeBase): pass
+db = SQLAlchemy(model_class=Base)
+
+# initialize LoginManager
 login_manager = LoginManager()
 
 def create_app(test_config=None):
