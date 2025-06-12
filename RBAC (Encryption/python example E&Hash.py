@@ -4,11 +4,14 @@ email = "alice@example.com"
 
 password_hash = hash_password(password)
 email_encrypted = encrypt_data(email)
+name = "#name"
 
 db.user.insert(
-    username=username,
+    username=#username,
     password_hash=password_hash,
     email_encrypted=email_encrypted,
     encryption_iv=None  # If using an IV, store it here
 )
 
+$echo "Goodmorning $username !" "Welcome, to MAXX Energy"
+$echo

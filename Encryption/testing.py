@@ -51,3 +51,5 @@ if __name__ == "__main__":
     if roles:
         add_user_role(1, roles.first().id)
     print("User-Roles:", list_user_roles()) 
+
+    
