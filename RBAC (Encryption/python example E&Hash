@@ -11,3 +11,4 @@ db.user.insert(
     email_encrypted=email_encrypted,
     encryption_iv=None  # If using an IV, store it here
 )
+
