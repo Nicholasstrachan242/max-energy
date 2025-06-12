@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from flask_login import LoginManager
-from app.commands import register_commands
 
 # Load environment variables
 load_dotenv()
@@ -68,11 +67,10 @@ def create_app(test_config=None):
     # blueprints and routes
     from app.general.home import home_bp as home
     from app.auth.auth import auth_bp as auth
+    from app.general.welcome import welcome_bp as welcome
     app.register_blueprint(home)
     app.register_blueprint(auth)
-
-    # register cli commands
-    register_commands(app)
+    app.register_blueprint(welcome)
 
     return app
 

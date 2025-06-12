@@ -3,6 +3,7 @@ from flask import Blueprint, redirect, render_template, request, session, url_fo
 from jinja2 import TemplateNotFound
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.models.User import User
+from flask_login import login_user
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -14,8 +15,12 @@ def login():
             password = request.form['password']
             user = User.query.filter_by(email=email).first()
             if user and user.check_password(password):
-                session['user_id'] = user.id
+                login_user(user)
                 return redirect(url_for('home.home_page'))
+            else:
+                # error message
+                error = 'Invalid email or password'
+                return render_template('login.html', error=error)
         return render_template('login.html')
     except TemplateNotFound:
         abort(404)

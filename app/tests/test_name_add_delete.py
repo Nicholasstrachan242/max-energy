@@ -3,7 +3,6 @@
 # Test 1: Add 1 row to table, return the row.
 # Test 2: Delete the row that was added in Test 1. Confirm that it is deleted.
 
-
 import pytest
 import os
 from dotenv import load_dotenv
@@ -59,6 +58,7 @@ def test_create_one(session):
     assert result is not None
     assert result.firstname == 'Temporary'
     assert result.lastname == 'User'
+    print(f"User added to table: {result}")
 
 #Test 2: Delete the row that was added in Test 1. Confirm that it is deleted.
 def test_delete_one(session):
