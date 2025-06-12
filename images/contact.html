@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Navigation bar styling */
+        nav {
+            background-color: #333;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+            margin: 0;
+        }
+
+        .contact-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .contact-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            width: 280px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .contact-card h2 {
+            margin-top: 0;
+            color: #444;
+        }
+
+        .map-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            background-color: #e6e6e6;
+        }
+
+        iframe {
+            width: 90%;
+            max-width: 800px;
+            height: 450px;
+            border: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <a href="home.html">Home</a> |
+        <a href="login.html">Login</a> |
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <h1>Contact Us</h1>
+
+    <div class="contact-container">
+        <div class="contact-card">
+            <h2>Nicholas S</h2>
+            <p>📞 (555) 123-4567</p>
+            <p>📧 nicholas.s@example.com</p>
+        </div>
+        <div class="contact-card">
+            <h2>Quatazia J</h2>
+            <p>📞 (555) 987-6543</p>
+            <p>📧 quatazia.j@example.com</p>
+        </div>
+        <div class="contact-card">
+            <h2>Jaz M</h2>
+            <p>📞 (555) 246-8101</p>
+            <p>📧 jaz.m@example.com</p>
+        </div>
+    </div>
+
+    <div class="map-container">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3165.0102191109045!2d-77.59982712431928!3d37.507677127501324!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89b1110dd4d3b45b%3A0xd9cdc140ac7409ec!2sMAXX%20Potential!5e0!3m2!1sen!2sus!4v1749578045931!5m2!1sen!2sus" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+
+</body>
+</html>

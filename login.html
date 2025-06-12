@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maxx Energy SecDevOps</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .login-container {
+            max-width: 450px;
+            margin: 50px auto;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label, input {
+            display: block;
+            width: 100%;
+        }
+
+        input {
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px;
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .brand-header {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 10px;
+            max-width: 100px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Menu -->
+    <nav>
+        <a href="home.html">Home</a> |
+        <a href="login.html">Login</a> |
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="login-container">
+        <img src="images/5.png" alt="Company Logo" class="logo">
+        <div class="brand-header">Maxx Energy SecDevOps</div>
+        <h1>Login</h1>
+        <form id="loginForm" action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+
+        loginForm.addEventListener('submit', function(event) {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            const unsafePattern = /<|>|'|"|;|--|\b(OR|AND|SELECT|DROP|INSERT|DELETE|UPDATE|WHERE)\b/i;
+
+            if (username === '' || password === '') {
+                alert('Username and password are required.');
+                event.preventDefault();
+                return;
+            }
+
+            if (unsafePattern.test(username) || unsafePattern.test(password)) {
+                alert('Invalid characters detected in username or password.');
+                event.preventDefault();
+                return;
+            }
+        });
+    </script>
+</body>
+</html>
