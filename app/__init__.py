@@ -32,12 +32,14 @@ def create_app(test_config=None):
             # TEST_DB_PASS, TEST_DB_HOST, 
             # TEST_DB_PORT, and TEST_DB_NAME
             # .env file not tracked by git. Create it manually.
+            
             'SECRET_KEY': os.getenv('TEST_SECRET_KEY'),
             'SQLALCHEMY_DATABASE_URI': (
                 f"mysql+pymysql://{os.getenv('TEST_DB_USER')}:{os.getenv('TEST_DB_PASS')}"
                 f"@{os.getenv('TEST_DB_HOST')}:{os.getenv('TEST_DB_PORT')}/{os.getenv('TEST_DB_NAME')}"
             ),
-            'SQLALCHEMY_TRACK_MODIFICATIONS': False
+            'SQLALCHEMY_TRACK_MODIFICATIONS': False,
+            'TESTING': TESTING
     }
     else:
         config = {

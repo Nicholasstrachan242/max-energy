@@ -9,6 +9,4 @@ def home_page():
     try: return render_template('index.html')
     except TemplateNotFound: 
         abort(404)
-
-
-    
+        

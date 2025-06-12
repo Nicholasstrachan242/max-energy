@@ -13,20 +13,15 @@ def run_windows_server(app):
     try:
         from waitress import serve
         print("Running on Windows - using Waitress server")
-        serve(app, host='localhost', port=8080)
+        serve(app, host='127.0.0.1', port=8080)
     except ImportError:
         print("Waitress is not installed. Please run: pip install waitress")
         sys.exit(1)
 
 # to run linux: gunicorn wsgi:app
 def run_linux_server(app):
-    try:
-        import gunicorn
-        print("Running on Linux - using Gunicorn server")
-        gunicorn.run(app, host='localhost', port=8080)
-    except ImportError:
-        print("Gunicorn is not installed. Please run: pip install gunicorn")
-        sys.exit(1)
+    print("Gunicorn is not meant to be run from this file. Please run from command line:" + "\n" + 
+          "gunicorn --bind *ip*:*port* wsgi:app" + "OR use flask run for development")
 
 # run the server
 if __name__ == "__main__":
