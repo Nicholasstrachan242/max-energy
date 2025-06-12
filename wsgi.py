@@ -5,23 +5,45 @@ import sys
 app = create_app()
 
 # Entry point for server.
-# Cross-platform logic to determine which server to use. 
-# Option to use Waitress for windows, Gunicorn for Linux.
+# python wsgi.py to run locally.
+# It ultimately just calls waitress-serve but without the logging provided by running it from command line.
+# [Windows && Waitress && Test Environment] is the only condition that results in a server being started.
 
-# to run windows: waitress-serve --host=127.0.0.1 --port=8000 wsgi:app
+# wsgi.py filename is standard naming convention used by various deployment tools.
+# Cross-platform and test/prod logic.
+# This file covers use cases for test and prod for Windows and Linux and recommends best practices.
+
+# tuple for easy reference to ip and port for testing
+test_ip_port = ('127.0.0.1', '8080')
+
+# Windows:
 def run_windows_server(app):
     try:
+        print("Currently using Windows - starting Waitress server FOR TESTING ONLY...")
         from waitress import serve
-        print("Running on Windows - using Waitress server")
-        serve(app, host='127.0.0.1', port=8080)
+        if app.config['TESTING']:
+            try:
+                serve(app, host=test_ip_port[0], port=test_ip_port[1])
+            except Exception as e:
+                print(f"Error starting server: {e}")
+                sys.exit(1)
+        else:
+            print("If running in production, please run from command line for proper logging.\n" + 
+                  "waitress-serve --host=*ip-here* --port=*port-here* wsgi:app")
+            sys.exit(1)
     except ImportError:
         print("Waitress is not installed. Please run: pip install waitress")
         sys.exit(1)
 
-# to run linux: gunicorn wsgi:app
+# Linux:
 def run_linux_server(app):
-    print("Gunicorn is not meant to be run from this file. Please run from command line:" + "\n" + 
-          "gunicorn --bind *ip*:*port* wsgi:app" + "OR use flask run for development")
+    if app.config['TESTING']:
+        print("Gunicorn is not meant to be run from file. For development, please run from command line:\n" + 
+              "flask run --host=*ip-here* --port=*port-here*" )
+    else:
+        print("Gunicorn is not meant to be run from file. For production, please run from command line:" + "\n" + 
+              "gunicorn --bind *ip-here*:*port-here* wsgi:app")
+        sys.exit(1)
 
 # run the server
 if __name__ == "__main__":
