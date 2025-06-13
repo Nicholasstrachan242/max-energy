@@ -5,11 +5,13 @@
 
 
 import pytest
-import os
-from dotenv import load_dotenv
-from flask import Flask
 from app import create_app, db
 from app.models.Names import Names
+
+ # Create 50 test rows with generated FirstName{number} and LastName{number}
+test_names = []
+for i in range(50):
+    test_names.append(Names(firstname=f'FirstName{i}', lastname=f'LastName{i}'))
 
 @pytest.fixture
 def app():
@@ -29,6 +31,7 @@ def session(app):
     with app.app_context():
         # Start a transaction
         db.session.begin()
+        print("DB connection established")
         
         yield db.session
         
@@ -53,6 +56,9 @@ def test_select_first(session):
 
 # TEST 2: select 50 rows, return selected rows in alphabetical order by lastname.
 def test_select_50_rows(session):
+    session.add_all(test_names)
+    session.commit()
+
     result = session.query(Names).order_by(Names.lastname.asc()).limit(50).all()
 
     lastnames = [row.lastname for row in result]

@@ -7,9 +7,6 @@
 # Test 4: Test that a protected page redirects to login page if user is not logged in.
 
 import pytest
-import os
-from flask import Flask
-from dotenv import load_dotenv
 from app import create_app,db
 from app.models.User import User
 

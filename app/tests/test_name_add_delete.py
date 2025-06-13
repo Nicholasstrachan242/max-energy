@@ -4,9 +4,6 @@
 # Test 2: Delete the row that was added in Test 1. Confirm that it is deleted.
 
 import pytest
-import os
-from dotenv import load_dotenv
-from flask import Flask
 from app import create_app, db
 from app.models.Names import Names
 
@@ -51,17 +48,24 @@ def test_create_one(session):
     assert result is not None
     assert result.firstname == 'Temporary'
     assert result.lastname == 'User'
-    print(f"User added to table: {result}")
 
-#Test 2: Delete the row that was added in Test 1. Confirm that it is deleted.
+#Test 2: Create a row, then delete it. Confirm that it is deleted.
 def test_delete_one(session):
-    # check if row exists
-    existing_row = session.query(Names).filter_by(firstname='Temporary', lastname='User').first()
+    # Create a row
+    name = Names(firstname='DeleteThis', lastname='User')
+    session.add(name)
+    session.commit()
+    
+    # Check if row exists and delete it
+    existing_row = session.query(Names).filter_by(firstname='DeleteThis', lastname='User').first()
     
     if existing_row:
-        print(f"Existing row found: {existing_row}. Now Deleting...")
         session.delete(existing_row)
         session.commit()
+        
+        # Confirm that the row was deleted
+        deleted_row = session.query(Names).filter_by(firstname='DeleteThis', lastname='User').first()
+        assert deleted_row is None, "Row was not properly deleted"
     else:
         pytest.fail("User does not exist. Add the row and try again.")
 
