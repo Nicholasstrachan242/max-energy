@@ -10,24 +10,17 @@ from flask import Flask
 from app import create_app, db
 from app.models.Names import Names
 
-# load environment variables
-load_dotenv()
-
 @pytest.fixture
 def app():
-    app = create_app()
-    db_uri = (
-        f"mysql+pymysql://{os.getenv('TEST_DB_USER')}:{os.getenv('TEST_DB_PASS')}"
-        f"@{os.getenv('TEST_DB_HOST')}:{os.getenv('TEST_DB_PORT')}/{os.getenv('TEST_DB_NAME')}"
-    )
-
-    # show uri
-    print(f"\nAttempting to connect with: {db_uri}")
-
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    db.init_app(app)
-    return app
+    app=create_app({
+        'TESTING': True,
+        'WTF_CSRF_ENABLED': False
+    })
+    with app.app_context():
+        db.create_all()
+        yield app
+        db.session.remove()
+        db.drop_all()
 
 # Create session for each test. Flask-SQLAlchemy automatically sets up engine and scoped session.
 @pytest.fixture(autouse=True)

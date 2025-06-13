@@ -9,7 +9,6 @@ from datetime import timedelta
 # Load environment variables
 load_dotenv()
 
-
 # initialize SQLAlchemy
 class Base(DeclarativeBase): pass
 db = SQLAlchemy(model_class=Base)
@@ -20,15 +19,16 @@ login_manager = LoginManager()
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
-    # determine if testing
-    env = os.getenv('APP_ENV', os.getenv('FLASK_ENV', 'production').lower())
+    # determine if testing.
+    # TESTING FLAG IS IN .env
+    env = os.getenv('APP_ENV', 'production').lower()
     is_testing = env in ['test', 'testing']
 
     # default config (FOR PRODUCTION)
     config = {
             # USING LOCAL MYSQL SERVER FOR TESTING
 
-            # use .env file for TEST_SECRET_KEY, TEST_DB_USER, 
+            # use .env for TEST_SECRET_KEY, TEST_DB_USER, 
             # TEST_DB_PASS, TEST_DB_HOST, 
             # TEST_DB_PORT, and TEST_DB_NAME
             # .env file not tracked by git. Create it manually.
