@@ -1,6 +1,8 @@
 import importlib
 from Encryption.user_model import db, User
 from Encryption.hashing_utils import generate_key, encrypt_data, hash_password
+from datetime import datetime, timedelta
+import re
 
 # Import RBAC helpers
 testing_db = importlib.import_module('RBAC (Encryption).Database for Authorization.testing_database')
@@ -14,11 +16,59 @@ list_permissions = view_example.list_permissions
 list_role_permissions = view_example.list_role_permissions
 list_user_roles = view_example.list_user_roles
 
+def password_strength_bar(password):
+    length = len(password)
+    complexity = 0
+    if re.search(r'[A-Z]', password):
+        complexity += 1
+    if re.search(r'[a-z]', password):
+        complexity += 1
+    if re.search(r'\d', password):
+        complexity += 1
+    if re.search(r'[^A-Za-z0-9]', password):
+        complexity += 1
+    score = min(length // 4, 4) + complexity
+    bar = '[' + '#' * score + '-' * (8 - score) + ']'
+    return bar, score
+
+def is_strong_password(password):
+    if len(password) < 15:
+        return False
+    if not re.search(r'[A-Z]', password):
+        return False
+    if not re.search(r'[a-z]', password):
+        return False
+    if not re.search(r'\d', password):
+        return False
+    if not re.search(r'[^A-Za-z0-9]', password):
+        return False
+    return True
+
+def is_unique_password(password):
+    # Check against all existing users' password hashes
+    users = db.session.query(User).all()
+    for user in users:
+        if hash_password(password) == user.password_hash:
+            return False
+    return True
+
+# Example: Assume User model has a password_last_changed field (datetime)
+def needs_password_change(user):
+    # If password_last_changed is not set, require change
+    if not hasattr(user, 'password_last_changed') or user.password_last_changed is None:
+        return True
+    return (datetime.utcnow() - user.password_last_changed) > timedelta(days=90)
+
 def print_users():
     users = db.session.query(User).all()
     print("\nUsers:")
     for user in users:
-        print(f"  ID: {user.id}, Username: {user.username}")
+        # Check password age if field exists
+        change_msg = ""
+        if hasattr(user, 'password_last_changed'):
+            if needs_password_change(user):
+                change_msg = " [Password change required]"
+        print(f"  ID: {user.id}, Username: {user.username}{change_msg}")
 
 def print_roles():
     roles = db(db.role).select()
@@ -86,6 +136,29 @@ def check_user_permissions():
     perms = set(perm_objs[pid] for pid in role_perms)
     print(f"User ID {user_id} has permissions: {', '.join(perms) if perms else 'None'}")
 
+# Example function for creating a user with password policy enforcement
+def create_user():
+    username = input("Enter new username: ")
+    while True:
+        password = input("Enter password (at least 15 chars, upper, lower, digit, special, unique): ")
+        bar, score = password_strength_bar(password)
+        print(f"Password strength: {bar}")
+        if not is_strong_password(password):
+            print("Password is not strong enough. Please use at least 15 characters, with upper, lower, digit, and special character.")
+            continue
+        if not is_unique_password(password):
+            print("Password is not unique. Please choose a different password.")
+            continue
+        break
+    email = input("Enter email: ")
+    key = generate_key()
+    password_hash = hash_password(password)
+    email_encrypted = encrypt_data(key, email)
+    user = User(username=username, password_hash=password_hash, email_encrypted=email_encrypted, encryption_iv=None, password_last_changed=datetime.utcnow())
+    db.session.add(user)
+    db.session.commit()
+    print(f"User {username} created. Encourage using a unique password!")
+
 def main():
     print("\n--- RBAC Admin Simulator ---")
     while True:
@@ -100,6 +173,7 @@ def main():
         print("8. Assign permission to role")
         print("9. Remove permission from role")
         print("10. Check user permissions")
+        print("11. Create new user (with strong password policy)")
         print("0. Exit")
         choice = input("Select an option: ")
         if choice == "1":
@@ -122,6 +196,8 @@ def main():
             remove_permission_from_role()
         elif choice == "10":
             check_user_permissions()
+        elif choice == "11":
+            create_user()
         elif choice == "0":
             print("Exiting RBAC Admin Simulator.")
             break

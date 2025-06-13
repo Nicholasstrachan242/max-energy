@@ -8,6 +8,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
     email_encrypted = db.Column(db.LargeBinary, nullable=False)
     encryption_iv = db.Column(db.LargeBinary, nullable=True)
+    password_last_changed = db.Column(db.DateTime, nullable=False, default=db.func.now())
 
     def __repr__(self):
-        return f'<User {self.username}>' 
+        return f'<User {self.username}, Last Changed: {self.password_last_changed}>' 
