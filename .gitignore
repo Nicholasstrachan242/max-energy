@@ -5,6 +5,9 @@ __pycache__/
 *.pvc
 *.pyo
 
+# python test files
+*.pytest_cache/
+
 # virtual environment (local)
 .venv/
 **/.venv/
