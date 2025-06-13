@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from flask_login import LoginManager
+from datetime import timedelta
 
 # Load environment variables
 load_dotenv()
@@ -39,6 +40,14 @@ def create_app(test_config=None):
                 f"@{os.getenv('TEST_DB_HOST')}:{os.getenv('TEST_DB_PORT')}/{os.getenv('TEST_DB_NAME')}"
             ),
             'SQLALCHEMY_TRACK_MODIFICATIONS': False,
+
+            # Cookie settings
+            'SESSION_COOKIE_SECURE': True, # session cookie only uses https
+            'REMEMBER_COOKIE_SECURE': True, # remember me cookie only uses https
+            'SESSION_COOKIE_HTTPONLY': True, # prevents JS from accessing session cookie
+            'REMEMBER_COOKIE_HTTPONLY': True, # prevents JS from accessing remember me cookie
+            'REMEMBER_COOKIE_DURATION': timedelta(days=2),
+
             'TESTING': TESTING
     }
     else:
@@ -52,7 +61,7 @@ def create_app(test_config=None):
     # initialize app with db connection
     db.init_app(app)
 
-    # initialize login manager
+    # setup login manager
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     @login_manager.user_loader

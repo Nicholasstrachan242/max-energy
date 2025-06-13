@@ -23,6 +23,8 @@ def run_windows_server(app):
         from waitress import serve
         if app.config['TESTING']:
             try:
+                print("Server starting..." + "\n" + 
+                      f"Navigate to http://{test_ip_port[0]}:{test_ip_port[1]} to test.")
                 serve(app, host=test_ip_port[0], port=test_ip_port[1])
             except Exception as e:
                 print(f"Error starting server: {e}")
