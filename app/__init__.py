@@ -9,6 +9,7 @@ from datetime import timedelta
 # Load environment variables
 load_dotenv()
 
+
 # initialize SQLAlchemy
 class Base(DeclarativeBase): pass
 db = SQLAlchemy(model_class=Base)
@@ -19,14 +20,12 @@ login_manager = LoginManager()
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
-    # TESTING FLAG
-    # ================================================
-    TESTING = True
-    # ================================================
+    # determine if testing
+    env = os.getenv('APP_ENV', os.getenv('FLASK_ENV', 'production').lower())
+    is_testing = env in ['test', 'testing']
 
-    # configure db connection for test and prod
-    if TESTING:
-        config = {
+    # default config (FOR PRODUCTION)
+    config = {
             # USING LOCAL MYSQL SERVER FOR TESTING
 
             # use .env file for TEST_SECRET_KEY, TEST_DB_USER, 
@@ -34,10 +33,10 @@ def create_app(test_config=None):
             # TEST_DB_PORT, and TEST_DB_NAME
             # .env file not tracked by git. Create it manually.
             
-            'SECRET_KEY': os.getenv('TEST_SECRET_KEY'),
+            'SECRET_KEY': os.getenv('SECRET_KEY'),
             'SQLALCHEMY_DATABASE_URI': (
-                f"mysql+pymysql://{os.getenv('TEST_DB_USER')}:{os.getenv('TEST_DB_PASS')}"
-                f"@{os.getenv('TEST_DB_HOST')}:{os.getenv('TEST_DB_PORT')}/{os.getenv('TEST_DB_NAME')}"
+                f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('_DB_PASS')}"
+                f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
             ),
             'SQLALCHEMY_TRACK_MODIFICATIONS': False,
 
@@ -47,13 +46,24 @@ def create_app(test_config=None):
             'SESSION_COOKIE_HTTPONLY': True, # prevents JS from accessing session cookie
             'REMEMBER_COOKIE_HTTPONLY': True, # prevents JS from accessing remember me cookie
             'REMEMBER_COOKIE_DURATION': timedelta(days=2),
-
-            'TESTING': TESTING
     }
-    else:
-        config = {
-            # PRODUCTION DB CONFIG HERE
-        }
+
+    # Overwrite config for testing
+    if is_testing: 
+        config.update({
+            'TESTING': True,
+            'SECRET_KEY': os.getenv('TEST_SECRET_KEY'),
+            'SQLALCHEMY_DATABASE_URI': (
+                f"mysql+pymysql://{os.getenv('TEST_DB_USER')}:{os.getenv('TEST_DB_PASS')}"
+                f"@{os.getenv('TEST_DB_HOST')}:{os.getenv('TEST_DB_PORT')}/{os.getenv('TEST_DB_NAME')}"
+            ),
+            'SQLALCHEMY_TRACK_MODIFICATIONS': False,
+            'WTF_CSRF_ENABLED': False # disable CSRF protection for testing
+        })
+
+    # allow test config to override default config
+    if test_config:
+        config.update(test_config)
 
     # pass in config
     app.config.from_mapping(config)

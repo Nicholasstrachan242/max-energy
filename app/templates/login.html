@@ -16,7 +16,7 @@
     <div class="login-container">
         <img src="../static/images/maxx-logo.png" alt="Maxx Energy Logo" class="logo">
         <div class="brand-header">Maxx Energy Login</div>
-        <form id="loginForm" action="{{url_for('auth.login')}}" method="POST" novalidate>
+        <form id="loginForm" action="{{url_for('auth.login', next=request.args.get('next'))}}" method="POST" novalidate>
             <div class="form-group">
                 <label for="email">Email:</label>
                 <input type="text" id="email" name="email" required>

@@ -7,7 +7,7 @@ import pytest
 import os
 from dotenv import load_dotenv
 from flask import Flask
-from app import db
+from app import create_app, db
 from app.models.Names import Names
 
 # load environment variables
@@ -15,7 +15,7 @@ load_dotenv()
 
 @pytest.fixture
 def app():
-    app=Flask(__name__)
+    app = create_app()
     db_uri = (
         f"mysql+pymysql://{os.getenv('TEST_DB_USER')}:{os.getenv('TEST_DB_PASS')}"
         f"@{os.getenv('TEST_DB_HOST')}:{os.getenv('TEST_DB_PORT')}/{os.getenv('TEST_DB_NAME')}"

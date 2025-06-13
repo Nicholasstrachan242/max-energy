@@ -10,9 +10,12 @@
 </head>
 
 <body>
-    <h1>Welcome, {{ current_user.name }}!</h1>
-    <p>You are logged in as a {{ current_user.role }}.</p>
-    <a href="{{ url_for('home.home_page') }}" class="home-button">Back to Home</a>
+    <h1>Welcome, {{ current_user.first_name }}!</h1>
+    <p>You are logged in as: {{ current_user.role }}</p>
+    <div class="button-container">
+        <a href="{{ url_for('home.home_page') }}" class="home-button">Back to Home</a>
+        <a href="{{ url_for('auth.logout') }}" class="button">Logout</a>
+    </div>
 </body>
 
 </html>
