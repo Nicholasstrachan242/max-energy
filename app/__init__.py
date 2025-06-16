@@ -4,14 +4,16 @@ from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 from flask_login import LoginManager
+from flask_migrate import Migrate
 from datetime import timedelta
 
 # Load environment variables
 load_dotenv()
 
-# initialize SQLAlchemy
+# initialize SQLAlchemy and Migrate
 class Base(DeclarativeBase): pass
 db = SQLAlchemy(model_class=Base)
+migrate = Migrate()
 
 # initialize LoginManager
 login_manager = LoginManager()
@@ -73,8 +75,7 @@ def create_app(test_config=None):
 
     # initialize app with db connection. Create tables if they don't exist.
     db.init_app(app)
-    with app.app_context():
-        db.create_all()
+    migrate.init_app(app, db)
 
     # setup login manager
     login_manager.init_app(app)
