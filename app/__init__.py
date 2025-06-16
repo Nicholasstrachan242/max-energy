@@ -15,6 +15,9 @@ db = SQLAlchemy(model_class=Base)
 
 # initialize LoginManager
 login_manager = LoginManager()
+# handle login messages for pages that require login
+login_manager.login_message = "Please log in to view this page."
+login_manager.login_message_category = "warning"
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -68,8 +71,10 @@ def create_app(test_config=None):
     # pass in config
     app.config.from_mapping(config)
 
-    # initialize app with db connection
+    # initialize app with db connection. Create tables if they don't exist.
     db.init_app(app)
+    with app.app_context():
+        db.create_all()
 
     # setup login manager
     login_manager.init_app(app)
@@ -88,10 +93,11 @@ def create_app(test_config=None):
     # blueprints and routes
     from app.general.home import home_bp as home
     from app.auth.auth import auth_bp as auth
-    from app.general.welcome import welcome_bp as welcome
+    from app.general.dashboard import dashboard_bp as dashboard
+    from app.general.contact import contact_bp as contact
     app.register_blueprint(home)
     app.register_blueprint(auth)
-    app.register_blueprint(welcome)
+    app.register_blueprint(dashboard)
+    app.register_blueprint(contact)
 
     return app
-

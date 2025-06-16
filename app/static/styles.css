@@ -1,47 +1,5 @@
-.login-container {
-  max-width: 400px;
-  margin: 50px auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-family: Arial;
-  text-align: flex-start;
-}
-
-.button {
-  background-color: #466da9;
-  width: 100%;
-  border-radius: 12px;
-  color: white;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-family: Arial;
-  text-decoration: none;
-}
-
-.home-button {
-  position: relative;
-  top: 10px;
-  margin-top: 20px;
-  background-color: #466da9;
-  width: 40px;
-  border-radius: 12px;
-  color: white;
-  padding: 10px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-family: Arial;
-  text-decoration: none;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
+/* Main styles here. Shared across all pages. */
+/* page-specific styles are in the respective page's css file. */
 
 .brand-header {
   text-align: center;
@@ -58,6 +16,19 @@
   height: auto;
 }
 
+h1 {
+  margin-top: 50px;
+  animation: colorPulse 3s ease-in-out infinite;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
 label {
   display: block;
   width: 100%;
@@ -65,14 +36,66 @@ label {
 }
 
 input {
-  width: 95%;
+  width: 100%;
   display: block;
   padding: 8px;
   margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 
 .error-message {
   color: red;
   font-size: 16px;
   margin-top: 10px;
+}
+
+/* Navigation bar styling */
+nav {
+  background-color: #333;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-left,
+.nav-center,
+.nav-right {
+  display: flex;
+  gap: 15px;
+}
+
+.nav-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* flash messages */
+.flash.error {
+  color: red;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.flash.warning {
+  color: orange;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.flash.info {
+  color: blue;
 }

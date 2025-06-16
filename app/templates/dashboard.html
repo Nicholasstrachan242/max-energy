@@ -1,0 +1,20 @@
+<!-- Temporary. show this "dashboard"page after successful login. Show user's name and their role. -->
+<!DOCTYPE html>
+<html lang="en">
+
+{% extends "base.html" %}
+{% block title %}Maxx Energy - Dashboard{% endblock %}
+{% block extra_css %}{% endblock %}
+
+<body>
+    <h1>Welcome, {{ current_user.first_name }}!</h1>
+    <p>You are logged in as: {{ current_user.role }}</p>
+    <p>You can now access the following features:</p>
+    <ul>
+        <li>Access this dashboard</li>
+        <li>Maybe add more role-specific features here</li>
+        <li>Change what's shown here based on user role</li>
+    </ul>
+</body>
+
+</html>

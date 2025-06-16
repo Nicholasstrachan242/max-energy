@@ -1,29 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maxx Energy</title>
-    <link rel="stylesheet" href="static/styles.css">
-</head>
+{% extends "base.html" %}
+{% block title %}Welcome to Maxx Energy{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+{% endblock %}
 
-<body>
-    <h1>MAXX Energy Home Page</h1>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vel condimentum nibh. Nam sodales est et orci
-        tincidunt
-        convallis. Maecenas neque ex, feugiat quis condimentum id, vehicula ut nibh. Vestibulum venenatis iaculis odio
-        varius
-        aliquet. Vivamus non ex nisl. Ut imperdiet sed nisl volutpat sodales. Sed tempus orci at lorem dignissim
-        rhoncus.
-    </p>
-    <div class="button-container">
-        {% if current_user.is_authenticated %}
-        <a href="{{ url_for('auth.logout') }}" class="button">Logout</a>
-        {% else %}
-        <a href="{{ url_for('auth.login') }}" class="button">Log In</a>
-        {% endif %}
-    </div>
-</body>
+{% block content %}
+<h1>Welcome to Maxx Energy!</h1>
+<p>
+    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat.
+    In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla
+    lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel
+    class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+    <br><br>
+    Mauris sagittis accumsan dui non suscipit. Curabitur non ante eu odio fringilla cursus. Nulla venenatis tortor non
+    nibh posuere ornare. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nunc
+    posuere auctor diam vitae condimentum. Sed ornare, libero nec fermentum semper, nibh felis blandit mauris, sed
+    luctus enim massa et dui. Integer iaculis in eros at pulvinar. In hac habitasse platea dictumst. Phasellus volutpat
+    dui eget nisi, sed luctus dolor euismod. Morbi felis magna, ornare vitae pharetra sit amet, egestas non nisl.
+</p>
+<div class="image-container">
+    <img src="{{ url_for('static', filename='images/stock-photo-trucks.jpg') }}" alt="Fleet of EV trucks" class="logo">
+    <img src="{{ url_for('static', filename='images/maxx-gray-logo.png') }}" alt="Maxx Energy Logo" class="logo middle">
+    <img src="{{ url_for('static', filename='images/stock-photo-worker.jpg') }}" alt="Worker" class="logo">
+</div>
+{% endblock %}
 
 </html>
