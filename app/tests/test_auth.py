@@ -70,8 +70,8 @@ def test_login_bad_credentials(client):
 # Test 2: Test that user can log in with valid credentials.
 def test_login_valid_credentials(client):
     response = login(client, TEST_USER_EMAIL, TEST_USER_PASS)
-    # should redirect to welcome page upon successful login
-    assert b"welcome" in response.data.lower()
+    # should redirect to dashboard page upon successful login
+    assert b"dashboard" in response.data.lower()
 
 # Test 3: Test that a logged in user can log out.
 def test_logout(client):
@@ -82,6 +82,6 @@ def test_logout(client):
 
 # Test 4: Test that a protected page redirects to login page if user is not logged in.
 def test_protected_page_redirect(client):
-    response = client.get("/welcome", follow_redirects=True)
+    response = client.get("/dashboard", follow_redirects=True)
     # should redirect to login page
     assert b"log in" in response.data.lower() or b"login" in response.data.lower()

@@ -20,7 +20,7 @@ def login():
                 login_user(user, remember=False)
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page)
-                return redirect(url_for('welcome.welcome_page'))
+                return redirect(url_for('dashboard.dashboard_page'))
             else:
                 # error message
                 error = 'Invalid email or password'
