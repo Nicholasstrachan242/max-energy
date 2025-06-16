@@ -2,6 +2,7 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from datetime import datetime
+from datetime import timezone
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -12,7 +13,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(50), nullable=False)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    date_created = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     last_login = db.Column(db.DateTime, nullable=True)
     
     def set_password(self, password):
@@ -27,8 +28,6 @@ class User(UserMixin, db.Model):
     # for use when adding activate/deactivate features
     def is_active(self):
         return True
-    
-
     
     # return string representation of user.
     def __repr__(self):

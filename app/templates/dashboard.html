@@ -4,17 +4,31 @@
 
 {% extends "base.html" %}
 {% block title %}Maxx Energy - Dashboard{% endblock %}
-{% block extra_css %}{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+{% endblock %}
 
-<body>
-    <h1>Welcome, {{ current_user.first_name }}!</h1>
-    <p>You are logged in as: {{ current_user.role }}</p>
-    <p>You can now access the following features:</p>
-    <ul>
-        <li>Access this dashboard</li>
-        <li>Maybe add more role-specific features here</li>
-        <li>Change what's shown here based on user role</li>
-    </ul>
-</body>
+{% block content %}
+<h1>Welcome, {{ current_user.first_name }}!</h1>
+<h2>Your role is: {{ current_user.role }}</h2>
+<p>You have access to the following features:</p>
+<div>
+    <div class="feature-list">
+        <div class="feature-box">
+            <h3>Your Feed</h3>
+            <div class="feature-content">
+                ----- Relevant information goes here -----
+            </div>
+        </div>
+        <div class="feature-box">
+            <h3>Role-specific actions</h3>
+            <div class="feature-content">
+                ----- Relevant information goes here -----
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
 
 </html>
