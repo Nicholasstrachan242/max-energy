@@ -6,8 +6,7 @@
 # - validate the input fields server-side
 # - ensure that the form is properly rendered in the template
 # - have added security with CSRF token
-# - scalable form fields 
-# - error logging
+# - scalable forms
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField

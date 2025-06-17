@@ -1,8 +1,20 @@
+# User model for the database
+
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 from datetime import datetime
 from datetime import timezone
+
+# TODO: encrypt+hash emails
+# Purpose: make sure no plaintext emails are stored and that they can still be used as unique identifiers for users
+# This will allow for fast lookup and login using the hash, and then decryption can happen as needed.
+# Would be able to use this for password reset functionality as well.
+
+# fernet to be used for symmetric encryption of emails using a secret key. KEEP THIS KEY SAFE.
+# hashlib's SHA-256 to be used for deterministic (same input -> same output), fast, unsalted hashing of emails. 
+# not using werkzeug.security.generate_password_hash() because it is not deterministic and is slower.
+
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
