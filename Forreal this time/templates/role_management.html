@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role Management - RBAC System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .welcome-message {
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .logout-button {
+            padding: 0.8rem 1.5rem;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: #c82333;
+        }
+
+        .management-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .section-title {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .button {
+            padding: 0.8rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .button:hover {
+            background: #764ba2;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .action-button {
+            padding: 0.5rem 1rem;
+            margin: 0 0.25rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .edit-button {
+            background: #28a745;
+            color: white;
+        }
+
+        .delete-button {
+            background: #dc3545;
+            color: white;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .flash-messages {
+            margin-bottom: 1rem;
+        }
+
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+
+        .modal-header {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-footer {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            text-align: right;
+        }
+
+        .close-button {
+            float: right;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="welcome-message">
+                Role Management System
+            </div>
+            <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+            <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('users')">Users</div>
+            <div class="tab" onclick="showTab('roles')">Roles</div>
+            <div class="tab" onclick="showTab('permissions')">Permissions</div>
+        </div>
+
+        <!-- Users Management Section -->
+        <div id="users" class="tab-content active">
+            <div class="management-section">
+                <h2 class="section-title">User Management</h2>
+                <form method="POST" action="{{ url_for('add_user') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_role">Role</label>
+                        <select id="user_role" name="role" required>
+                            {% for role in roles %}
+                            <option value="{{ role.name }}">{{ role.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="button">Add User</button>
+                </form>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Last Login</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.role.name }}</td>
+                            <td>{{ user.status }}</td>
+                            <td>{{ user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else 'Never' }}</td>
+                            <td>
+                                <button class="action-button edit-button" onclick="showEditUserModal('{{ user.id }}', '{{ user.username }}', '{{ user.role.name }}')">Edit</button>
+                                {% if user.username != 'admin' %}
+                                <button class="action-button delete-button" onclick="showDeleteUserModal('{{ user.id }}', '{{ user.username }}')">Delete</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Roles Management Section -->
+        <div id="roles" class="tab-content">
+            <div class="management-section">
+                <h2 class="section-title">Role Management</h2>
+                <form method="POST" action="{{ url_for('add_role') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-group">
+                        <label for="role_name">Role Name</label>
+                        <input type="text" id="role_name" name="role_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="role_description">Description</label>
+                        <input type="text" id="role_description" name="description" required>
+                    </div>
+                    <button type="submit" class="button">Add Role</button>
+                </form>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Role Name</th>
+                            <th>Description</th>
+                            <th>Permissions</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for role in roles %}
+                        <tr>
+                            <td>{{ role.name }}</td>
+                            <td>{{ role.description }}</td>
+                            <td>{{ role.permissions|map(attribute='name')|join(', ') }}</td>
+                            <td>
+                                {% if role.name != 'admin' %}
+                                <button class="action-button edit-button" onclick="showEditRoleModal('{{ role.id }}', '{{ role.name }}', '{{ role.description }}')">Edit</button>
+                                <button class="action-button delete-button" onclick="showDeleteRoleModal('{{ role.id }}', '{{ role.name }}')">Delete</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Permissions Management Section -->
+        <div id="permissions" class="tab-content">
+            <div class="management-section">
+                <h2 class="section-title">Permission Management</h2>
+                <form method="POST" action="{{ url_for('add_permission') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-group">
+                        <label for="permission_name">Permission Name</label>
+                        <input type="text" id="permission_name" name="permission_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="permission_description">Description</label>
+                        <input type="text" id="permission_description" name="description" required>
+                    </div>
+                    <button type="submit" class="button">Add Permission</button>
+                </form>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Permission Name</th>
+                            <th>Description</th>
+                            <th>Assigned Roles</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for permission in permissions %}
+                        <tr>
+                            <td>{{ permission.name }}</td>
+                            <td>{{ permission.description }}</td>
+                            <td>{{ permission.roles|map(attribute='name')|join(', ') }}</td>
+                            <td>
+                                <button class="action-button edit-button" onclick="showEditPermissionModal('{{ permission.id }}', '{{ permission.name }}', '{{ permission.description }}')">Edit</button>
+                                <button class="action-button delete-button" onclick="showDeletePermissionModal('{{ permission.id }}', '{{ permission.name }}')">Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit User</h3>
+                <span class="close-button" onclick="closeModal('editUserModal')">&times;</span>
+            </div>
+            <form method="POST" id="editUserForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="edit_username">Username</label>
+                    <input type="text" id="edit_username" name="username" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="edit_user_role">Role</label>
+                    <select id="edit_user_role" name="role" required>
+                        {% for role in roles %}
+                        <option value="{{ role.name }}">{{ role.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="button">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete User Modal -->
+    <div id="deleteUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete User</h3>
+                <span class="close-button" onclick="closeModal('deleteUserModal')">&times;</span>
+            </div>
+            <p>Are you sure you want to delete user <span id="deleteUserName"></span>?</p>
+            <form method="POST" id="deleteUserForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-footer">
+                    <button type="submit" class="button delete-button">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Role Modal -->
+    <div id="editRoleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Role</h3>
+                <span class="close-button" onclick="closeModal('editRoleModal')">&times;</span>
+            </div>
+            <form method="POST" id="editRoleForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="edit_role_name">Role Name</label>
+                    <input type="text" id="edit_role_name" name="role_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_role_description">Description</label>
+                    <input type="text" id="edit_role_description" name="description" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="button">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Role Modal -->
+    <div id="deleteRoleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Role</h3>
+                <span class="close-button" onclick="closeModal('deleteRoleModal')">&times;</span>
+            </div>
+            <p>Are you sure you want to delete role <span id="deleteRoleName"></span>?</p>
+            <form method="POST" id="deleteRoleForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-footer">
+                    <button type="submit" class="button delete-button">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Permission Modal -->
+    <div id="editPermissionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Permission</h3>
+                <span class="close-button" onclick="closeModal('editPermissionModal')">&times;</span>
+            </div>
+            <form method="POST" id="editPermissionForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="edit_permission_name">Permission Name</label>
+                    <input type="text" id="edit_permission_name" name="permission_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_permission_description">Description</label>
+                    <input type="text" id="edit_permission_description" name="description" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="button">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Permission Modal -->
+    <div id="deletePermissionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Permission</h3>
+                <span class="close-button" onclick="closeModal('deletePermissionModal')">&times;</span>
+            </div>
+            <p>Are you sure you want to delete permission <span id="deletePermissionName"></span>?</p>
+            <form method="POST" id="deletePermissionForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-footer">
+                    <button type="submit" class="button delete-button">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showEditUserModal(userId, username, role) {
+            const form = document.getElementById('editUserForm');
+            form.action = `/edit_user/${userId}`;
+            document.getElementById('edit_username').value = username;
+            document.getElementById('edit_user_role').value = role;
+            showModal('editUserModal');
+        }
+
+        function showDeleteUserModal(userId, username) {
+            const form = document.getElementById('deleteUserForm');
+            form.action = `/delete_user/${userId}`;
+            document.getElementById('deleteUserName').textContent = username;
+            showModal('deleteUserModal');
+        }
+
+        function showEditRoleModal(roleId, name, description) {
+            const form = document.getElementById('editRoleForm');
+            form.action = `/edit_role/${roleId}`;
+            document.getElementById('edit_role_name').value = name;
+            document.getElementById('edit_role_description').value = description;
+            showModal('editRoleModal');
+        }
+
+        function showDeleteRoleModal(roleId, name) {
+            const form = document.getElementById('deleteRoleForm');
+            form.action = `/delete_role/${roleId}`;
+            document.getElementById('deleteRoleName').textContent = name;
+            showModal('deleteRoleModal');
+        }
+
+        function showEditPermissionModal(permissionId, name, description) {
+            const form = document.getElementById('editPermissionForm');
+            form.action = `/edit_permission/${permissionId}`;
+            document.getElementById('edit_permission_name').value = name;
+            document.getElementById('edit_permission_description').value = description;
+            showModal('editPermissionModal');
+        }
+
+        function showDeletePermissionModal(permissionId, name) {
+            const form = document.getElementById('deletePermissionForm');
+            form.action = `/delete_permission/${permissionId}`;
+            document.getElementById('deletePermissionName').textContent = name;
+            showModal('deletePermissionModal');
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

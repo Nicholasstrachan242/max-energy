@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - RBAC System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #496DA7 0%, #2D2D2D 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .company-bg-watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, #496DA7 0%, #FBB019 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-transform: uppercase;
+            white-space: nowrap;
+            z-index: 0;
+            opacity: 0.10;
+            pointer-events: none;
+            user-select: none;
+            letter-spacing: 0.5rem;
+        }
+
+        .login-container {
+            background: rgba(44, 61, 94, 0.97);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px #496DA744, 0 0 40px #FBB01933;
+            width: 100%;
+            max-width: 400px;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(5px);
+            border: 1px solid #496DA7;
+        }
+
+        .welcome-to {
+            text-align: center;
+            color: #FBB019;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.1rem;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            background: linear-gradient(90deg, #496DA7 0%, #FBB019 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px #FBB01944;
+        }
+
+        .login-header p {
+            color: #bfcbe3;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #FBB019;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(73, 109, 167, 0.15);
+            color: #fff;
+            border: 1px solid #496DA7;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #FBB019;
+            box-shadow: 0 0 10px #FBB01955;
+        }
+
+        .form-group input::placeholder {
+            color: #bfcbe3;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(90deg, #FBB019 0%, #496DA7 100%);
+            color: #2D2D2D;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(90deg, #496DA7 0%, #FBB019 100%);
+            color: #fff;
+            box-shadow: 0 5px 15px #FBB01955;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .forgot-password a {
+            color: #FBB019;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a:hover {
+            color: #496DA7;
+            text-shadow: 0 0 10px #FBB01955;
+        }
+
+        .error-message {
+            color: #ff4d4d;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-align: center;
+            text-shadow: 0 0 10px #2D2D2D33;
+        }
+
+        @media (max-width: 768px) {
+            .company-name {
+                font-size: 5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="company-bg-watermark">MAXX ENERGY</div>
+    <div class="login-container">
+        <div class="welcome-to">Welcome to</div>
+        <div class="login-header">
+            <h1>MAXX ENERGY</h1>
+            <p>Please login to your account</p>
+        </div>
+        <form method="POST" action="{{ url_for('login') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter your password">
+            </div>
+            {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+            {% endif %}
+            <button type="submit" class="login-button">Login</button>
+        </form>
+        <div class="forgot-password">
+            <a href="#">Forgot Password?</a>
+        </div>
+    </div>
+</body>
+</html>

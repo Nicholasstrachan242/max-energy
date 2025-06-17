@@ -1,13 +1,16 @@
 
 
-add_role = view_example.add_role
-add_permission = view_example.add_permission
-add_role_permission = view_example.add_role_permission
-add_user_role = view_example.add_user_role
-list_roles = view_example.list_roles
-list_permissions = view_example.list_permissions
-list_role_permissions = view_example.list_role_permissions
-list_user_roles = view_example.list_user_roles
+import re
+
+
+add_role = view_example.add_role # type: ignore
+add_permission = view_example.add_permission # type: ignore
+add_role_permission = view_example.add_role_permission # type: ignore
+add_user_role = view_example.add_user_role # type: ignore
+list_roles = view_example.list_roles # type: ignore
+list_permissions = view_example.list_permissions # type: ignore
+list_role_permissions = view_example.list_role_permissions # type: ignore
+list_user_roles = view_example.list_user_roles # type: ignore
 
 def password_strength_bar(password):
     length = len(password)
@@ -39,7 +42,7 @@ def is_strong_password(password):
 
 def is_unique_password(password):
     # Check against all existing users' password hashes
-    users = db.session.query(User).all()
+    users = db.session.query(User).all() # type: ignore
     for user in users:
         if hash_password(password) == user.password_hash:
             return False
