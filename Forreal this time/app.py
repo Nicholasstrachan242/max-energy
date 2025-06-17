@@ -14,38 +14,70 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 csrf = CSRFProtect(app)
 
-# Create database tables
+# Create database tables and seed roles
 with app.app_context():
     db.create_all()
+    # Seed roles
+    role_names = [
+        ('admin', 'System Administrator'),
+        ('executive', 'Executive User'),
+        ('manager', 'Manager User'),
+        ('staff', 'Staff User'),
+        ('guest', 'Guest User')
+    ]
+    for name, desc in role_names:
+        if not Role.query.filter_by(name=name).first():
+            db.session.add(Role(name=name, description=desc))
+    db.session.commit()
     # Create default admin role and user if they don't exist
-    if not Role.query.filter_by(name='admin').first():
-        admin_role = Role(name='admin', description='System Administrator')
-        db.session.add(admin_role)
+    admin_role = Role.query.filter_by(name='admin').first()
+    if admin_role and not User.query.filter_by(username='admin').first():
+        admin_user = User(username='admin', role=admin_role)
+        admin_user.set_password('password')
+        db.session.add(admin_user)
         db.session.commit()
-        
-        # Create default permissions
-        permissions = {
-            'manage_users': 'Can manage system users',
-            'manage_roles': 'Can manage roles',
-            'manage_permissions': 'Can manage permissions',
-            'edit_content': 'Can edit content',
-            'view_content': 'Can view content'
-        }
-        
-        for name, description in permissions.items():
-            if not Permission.query.filter_by(name=name).first():
-                permission = Permission(name=name, description=description)
-                db.session.add(permission)
-                admin_role.permissions.append(permission)
-        
+    # Create default permissions if not exist
+    permissions = {
+        'manage_users': 'Can manage system users',
+        'manage_roles': 'Can manage roles',
+        'manage_permissions': 'Can manage permissions',
+        'edit_content': 'Can edit content',
+        'view_content': 'Can view content',
+        'manage_team': 'Can manage their team',
+        'view_reports': 'Can view reports'
+    }
+    for name, description in permissions.items():
+        if not Permission.query.filter_by(name=name).first():
+            db.session.add(Permission(name=name, description=description))
+    db.session.commit()
+    # Seed default manager user
+    manager_role = Role.query.filter_by(name='manager').first()
+    if manager_role and not User.query.filter_by(username='manager').first():
+        manager_user = User(username='manager', role=manager_role)
+        manager_user.set_password('password')
+        db.session.add(manager_user)
         db.session.commit()
-        
-        # Create admin user
-        if not User.query.filter_by(username='admin').first():
-            admin_user = User(username='admin', role=admin_role)
-            admin_user.set_password('password')
-            db.session.add(admin_user)
-            db.session.commit()
+    # Seed default executive user
+    executive_role = Role.query.filter_by(name='executive').first()
+    if executive_role and not User.query.filter_by(username='executive').first():
+        executive_user = User(username='executive', role=executive_role)
+        executive_user.set_password('password')
+        db.session.add(executive_user)
+        db.session.commit()
+    # Seed default staff user
+    staff_role = Role.query.filter_by(name='staff').first()
+    if staff_role and not User.query.filter_by(username='staff').first():
+        staff_user = User(username='staff', role=staff_role)
+        staff_user.set_password('password')
+        db.session.add(staff_user)
+        db.session.commit()
+    # Seed default guest user
+    guest_role = Role.query.filter_by(name='guest').first()
+    if guest_role and not User.query.filter_by(username='guest').first():
+        guest_user = User(username='guest', role=guest_role)
+        guest_user.set_password('password')
+        db.session.add(guest_user)
+        db.session.commit()
 
 def admin_required(f):
     @wraps(f)
@@ -80,6 +112,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and user.check_password(password):
             session['username'] = username
+            session['role'] = user.role.name
             user.last_login = datetime.utcnow()
             db.session.commit()
             
@@ -92,11 +125,31 @@ def login():
     
     return render_template('login.html')
 
+@app.route('/home')
+def home():
+    # Only allow guests to access home
+    if 'username' in session:
+        user = User.query.filter_by(username=session['username']).first()
+        if user and user.role.name == 'guest':
+            session['role'] = user.role.name
+            return render_template('home.html')
+        else:
+            return redirect(url_for('dashboard'))
+    return render_template('home.html')
+
 @app.route('/dashboard')
 def dashboard():
     if 'username' not in session:
         return redirect(url_for('login'))
-    return render_template('dashboard.html')
+    user = User.query.filter_by(username=session['username']).first()
+    allowed_roles = ['admin', 'executive', 'manager', 'staff']
+    if user.role.name in allowed_roles:
+        session['role'] = user.role.name
+        user_permissions = [perm.name for perm in user.role.permissions]
+        return render_template('dashboard.html', user_permissions=user_permissions)
+    else:
+        flash('Access denied.')
+        return redirect(url_for('home'))
 
 @app.route('/role-management')
 @admin_required
@@ -270,6 +323,27 @@ def remove_permission(role_id, permission_id):
 def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
+
+@app.route('/admin/assign-permissions', methods=['GET', 'POST'])
+@admin_required
+def assign_permissions_admin():
+    roles = Role.query.all()
+    permissions = Permission.query.all()
+    if request.method == 'POST':
+        role_id = int(request.form['role_id'])
+        selected_permission_ids = request.form.getlist('permissions')
+        role = Role.query.get_or_404(role_id)
+        # Clear all permissions first
+        role.permissions = []
+        # Assign selected permissions
+        for perm_id in selected_permission_ids:
+            perm = Permission.query.get(int(perm_id))
+            if perm:
+                role.permissions.append(perm)
+        db.session.commit()
+        flash('Permissions updated for role: ' + role.name)
+        return redirect(url_for('assign_permissions_admin'))
+    return render_template('assign_permissions.html', roles=roles, permissions=permissions)
 
 if __name__ == '__main__':
     app.run(debug=True)

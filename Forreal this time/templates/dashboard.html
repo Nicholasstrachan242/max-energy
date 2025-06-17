@@ -63,18 +63,65 @@
         }
     </style>
 </head>
-<body>
+<body
+    {% if session['role'] == 'admin' %}style="background: linear-gradient(135deg, #2D2D2D 0%, #FBB019 100%);"
+    {% elif session['role'] == 'executive' %}style="background: linear-gradient(135deg, #496DA7 0%, #FBB019 100%);"
+    {% elif session['role'] == 'manager' %}style="background: linear-gradient(135deg, #496DA7 0%, #00ffaa 100%);"
+    {% elif session['role'] == 'staff' %}style="background: linear-gradient(135deg, #496DA7 0%, #a0aec0 100%);"
+    {% elif session['role'] == 'guest' %}style="background: linear-gradient(135deg, #bfcbe3 0%, #496DA7 100%);"
+    {% endif %}
+>
+    <nav style="display: flex; justify-content: flex-end; gap: 1.5rem; padding: 1rem 2rem; background: #496DA7; color: #fff;">
+        {% if session['role'] == 'admin' %}
+            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="{{ url_for('role_management') }}" style="color:#fff;">Role Management</a>
+            <a href="{{ url_for('assign_permissions_admin') }}" style="color:#fff;">Assign Permissions</a>
+            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+        {% elif session['role'] == 'executive' %}
+            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="#" style="color:#fff;">Executive Reports</a>
+            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+        {% elif session['role'] == 'manager' %}
+            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="#" style="color:#fff;">Manage Team</a>
+            <a href="#" style="color:#fff;">View Reports</a>
+            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+        {% elif session['role'] == 'staff' %}
+            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="#" style="color:#fff;">My Tasks</a>
+            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+        {% elif session['role'] == 'guest' %}
+            <a href="{{ url_for('home') }}" style="color:#fff;">Home</a>
+            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}" style="color:#fff;">Login</a>
+        {% endif %}
+    </nav>
     <div class="dashboard-container">
-        <div class="dashboard-header">
-            <div class="welcome-message">
-                Welcome, {{ session['username'] }}!
-            </div>
-            <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
-        </div>
-        <div class="dashboard-content">
-            <h2>Dashboard</h2>
-            <p>This is your secure dashboard. You are now logged in to the system.</p>
-            <!-- Add more dashboard content here -->
+        <h1>Welcome, {{ session['username'] }}!</h1>
+        <p>This is your dashboard.</p>
+        <div style="margin-top:2rem;">
+            {% if 'manage_users' in user_permissions %}
+                <a href="{{ url_for('role_management') }}" class="btn btn-primary">User & Role Management</a><br><br>
+            {% endif %}
+            {% if 'manage_permissions' in user_permissions %}
+                <a href="{{ url_for('assign_permissions_admin') }}" class="btn btn-primary">Assign Permissions</a><br><br>
+            {% endif %}
+            {% if 'manage_team' in user_permissions %}
+                <a href="#" class="btn btn-primary">Manage Team</a><br><br>
+            {% endif %}
+            {% if 'view_reports' in user_permissions %}
+                <a href="#" class="btn btn-primary">View Reports</a><br><br>
+            {% endif %}
+            {% if 'edit_content' in user_permissions %}
+                <a href="#" class="btn btn-primary">Edit Content</a><br><br>
+            {% endif %}
+            {% if 'view_content' in user_permissions %}
+                <a href="#" class="btn btn-primary">View Content</a><br><br>
+            {% endif %}
+            {% if user_permissions|length == 0 %}
+                <p style="color:#888;">You have no special permissions. Please contact your administrator for access.</p>
+            {% endif %}
         </div>
     </div>
 </body>
