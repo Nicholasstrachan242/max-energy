@@ -65,7 +65,7 @@ def main():
                 print(f"Skipping {entry['email']}: Invalid role '{role}'. Only manager, employee, and guest roles are allowed.")
                 continue
 
-            # Check if user already exists. If so, skip. This prevents duplicates.
+            # Check if user already exists. If so, skip to prevent duplicates.
             email = entry["email"].strip().lower()
             if User.query.filter_by(email_hash=User.hash_email(email)).first():
                 print(f"Skipping: {email} already exists.")
