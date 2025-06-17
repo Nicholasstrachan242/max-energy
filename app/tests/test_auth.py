@@ -24,7 +24,6 @@ def app():
         'WTF_CSRF_ENABLED': False # disable CSRF protection for testing
     })
     with app.app_context():
-        db.create_all()
         # make sure test user exists before tests
         user = User.query.filter_by(email_hash=User.hash_email(TEST_USER_EMAIL)).first()
         if not user:
@@ -46,7 +45,6 @@ def app():
             db.session.delete(user)
             db.session.commit()
         db.session.remove()
-        db.drop_all()
 
 @pytest.fixture
 def client(app):
