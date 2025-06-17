@@ -40,7 +40,7 @@ def create_app(test_config=None):
             
             'SECRET_KEY': os.getenv('SECRET_KEY'),
             'SQLALCHEMY_DATABASE_URI': (
-                f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('_DB_PASS')}"
+                f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}"
                 f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
             ),
             'SQLALCHEMY_TRACK_MODIFICATIONS': False,
@@ -49,8 +49,11 @@ def create_app(test_config=None):
             'SESSION_COOKIE_SECURE': True, # session cookie only uses https
             'REMEMBER_COOKIE_SECURE': True, # remember me cookie only uses https
             'SESSION_COOKIE_HTTPONLY': True, # prevents JS from accessing session cookie
+            'SESSION_COOKIE_SAMESITE': 'Lax', # helps prevent CSRF attacks
             'REMEMBER_COOKIE_HTTPONLY': True, # prevents JS from accessing remember me cookie
             'REMEMBER_COOKIE_DURATION': timedelta(days=2),
+            'REMEMBER_COOKIE_SAMESITE': 'Lax', # helps prevent CSRF attacks
+            'WTF_CSRF_ENABLED': True, # enable CSRF protection TODO: finish setting up CSRF protection on pages with forms
     }
 
     # Overwrite config for testing
@@ -96,9 +99,12 @@ def create_app(test_config=None):
     from app.auth.auth import auth_bp as auth
     from app.general.dashboard import dashboard_bp as dashboard
     from app.general.contact import contact_bp as contact
+    from app.general.admin import admin_bp as admin
     app.register_blueprint(home)
     app.register_blueprint(auth)
     app.register_blueprint(dashboard)
     app.register_blueprint(contact)
+    app.register_blueprint(admin)
+
 
     return app

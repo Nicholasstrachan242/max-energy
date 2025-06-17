@@ -1,0 +1,28 @@
+<!-- admins-only.html is meant to show a restricted access page for admins only.
+ It is meant to demonstrate RBAC and the route will only be accessible to admins. -->
+
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base.html" %}
+{% block title %}Admin Panel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='admins-only.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-panel-container">
+    <h1>Admin Panel</h1>
+    <p>
+        <strong>Restricted Access:</strong> This page is for administrators only.<br>
+        Use the tools below to manage users and system settings.
+    </p>
+    <div class="admin-panel-actions">
+        <button>Manage Users</button>
+        <button>View System Logs</button>
+        <button>Site Settings</button>
+    </div>
+</div>
+{% endblock %}
+
+</html>

@@ -2,6 +2,11 @@ import os
 import sys
 import re
 from datetime import datetime
+
+# Add the project root directory to Python path
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
+
 from app import create_app, db
 from app.models.User import User
 
@@ -9,27 +14,31 @@ from app.models.User import User
 
 # This script is used to create multiple users at once. It will skip duplicates and enforce password requirements.
 
-# Add the project root directory to Python path
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, project_root)
-
-# List of dictionaries of users to create
+# List of dicts of users to create
 USERS_TO_CREATE = [
     {
         "first_name": "John",
         "last_name": "Doe",
         "email": "john@maxx-energy.com",
-        "password": "--- password goes here ---",
+        "password": "Password123!",
         "role": "employee",
     },
     {
         "first_name": "Alice",
         "last_name": "Smith",
         "email": "alice@maxx-energy.com",
-        "password": "--- password goes here ---",
+        "password": "Password1234!",
         "role": "guest",
     },
-    # Add more users as needed...
+    {
+        "first_name": "Jane",
+        "last_name": "Doe",
+        "email": "jane@maxx-energy.com",
+        "password": "Password1234!",
+        "role": "manager",
+    },
+    
+    # Add more users to this list as needed
 ]
 
 # Check for the following password requirements:

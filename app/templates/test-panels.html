@@ -1,0 +1,39 @@
+<!-- test_panels.html is meant to show different panels depending on the user's role -->
+
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1>Welcome, {{ user.first_name }}!</h1>
+
+{% if user.role == 'admin' %}
+<div class="panel admin-panel">
+    <h2>Admin Panel</h2>
+    <p>Special tools for administrators.</p>
+    <!-- admin-only content -->
+</div>
+{% endif %}
+
+{% if user.role == 'manager' %}
+<div class="panel manager-panel">
+    <h2>Manager Panel</h2>
+    <p>Manager-specific dashboard content.</p>
+    <!-- manager-only content -->
+</div>
+{% endif %}
+
+{% if user.role == 'employee' %}
+<div class="panel employee-panel">
+    <h2>Employee Panel</h2>
+    <p>Employee dashboard content.</p>
+    <!-- employee-only content -->
+</div>
+{% endif %}
+
+<!-- You can also show panels for all users -->
+<div class="panel general-panel">
+    <h2>General Dashboard</h2>
+    <p>This section is visible to everyone.</p>
+</div>
+
+{% endblock %}
