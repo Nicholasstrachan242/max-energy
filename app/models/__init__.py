@@ -1,7 +1,7 @@
 # init file for models package
 # add all models to app/models directory and import them here
 
-from .User import User 
+from .User import User
 from .Names import Names
 
 # To migrate any new models or changes to existing schema, run the following Flask-Migrate commands:

@@ -26,14 +26,14 @@ def app():
     with app.app_context():
         db.create_all()
         # make sure test user exists before tests
-        user = User.query.filter_by(email='test@test.com').first()
+        user = User.query.filter_by(email_hash=User.hash_email(TEST_USER_EMAIL)).first()
         if not user:
             user = User(
                 first_name=TEST_USER_FIRST,
                 last_name=TEST_USER_LAST,
-                email=TEST_USER_EMAIL,
                 role=TEST_USER_ROLE
             )
+            user.set_email(TEST_USER_EMAIL)
             user.set_password(TEST_USER_PASS)
             db.session.add(user)
             db.session.commit()
@@ -41,7 +41,7 @@ def app():
         yield app
 
         # cleanup after tests
-        user = User.query.filter_by(email=TEST_USER_EMAIL).first()
+        user = User.query.filter_by(email_hash=User.hash_email(TEST_USER_EMAIL)).first()
         if user:
             db.session.delete(user)
             db.session.commit()

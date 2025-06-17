@@ -24,15 +24,6 @@ def get_fernet():
         raise RuntimeError("EMAIL_ENCRYPTION_KEY is not set in environment variables.")
     return Fernet(key.encode())
 
-# hash email function
-# using SHA-256 because it is deterministic. Not adding salt
-def hash_email(email):
-    # normalize by removing whitespace and setting to lowercase
-    normalized_email = email.strip().lower()
-    # hash using SHA-256
-    email_hash = hashlib.sha256(normalized_email.encode()).hexdigest()
-    return email_hash
-
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
     
@@ -47,9 +38,20 @@ class User(UserMixin, db.Model):
     date_created = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     last_login = db.Column(db.DateTime, nullable=True)
 
+   
+    # hash email function is static because it does not need to be tied to a specific user instance.
+    # using SHA-256 because it is deterministic. Not adding salt
+    @staticmethod
+    def hash_email(email):
+        # normalize by removing whitespace and setting to lowercase
+        normalized_email = email.strip().lower()
+        # hash using SHA-256
+        email_hash = hashlib.sha256(normalized_email.encode()).hexdigest()
+        return email_hash
+
     def set_email(self, email):
         normalized_email = email.strip().lower()
-        self.email_hash = hash_email(normalized_email)
+        self.email_hash = self.hash_email(normalized_email)
         self.email_encrypted = get_fernet().encrypt(normalized_email.encode())
 
     def get_email(self):

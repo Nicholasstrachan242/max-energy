@@ -10,7 +10,7 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
 from app import create_app, db
-from app.models.User import User, hash_email
+from app.models.User import User
 
 # Check for the following password requirements:
 # - Minimum length of 12 characters
@@ -44,7 +44,7 @@ def main():
                 sys.exit(1)
                 
         email = input("Email: ").strip().lower()
-        if User.query.filter_by(email_hash=hash_email(email)).first():
+        if User.query.filter_by(email_hash=User.hash_email(email)).first():
             print("Error: This email is already registered. Cancelling user creation.")
             sys.exit(1)
         

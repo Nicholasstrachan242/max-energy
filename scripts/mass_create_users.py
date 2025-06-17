@@ -8,7 +8,7 @@ project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
 
 from app import create_app, db
-from app.models.User import User, hash_email
+from app.models.User import User
 
 # WARNING: FOR INTERNAL ADMIN USE ONLY. Do not run or edit this script without prior authorization.
 
@@ -67,7 +67,7 @@ def main():
 
             # Check if user already exists. If so, skip. This prevents duplicates.
             email = entry["email"].strip().lower()
-            if User.query.filter_by(email_hash=hash_email(email)).first():
+            if User.query.filter_by(email_hash=User.hash_email(email)).first():
                 print(f"Skipping: {email} already exists.")
                 continue
 
