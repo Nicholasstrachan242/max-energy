@@ -18,7 +18,3 @@ class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')
-
-    # TODO: 
-    # - import this form into auth.py
-    # - update the login.html template to use flask-wtf field rendering and form.hidden_tag()

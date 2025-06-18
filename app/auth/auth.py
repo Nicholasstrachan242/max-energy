@@ -7,15 +7,17 @@ from flask_login import login_user, logout_user, login_required
 from datetime import datetime, timezone
 from urllib.parse import urlparse, urljoin
 from app import db
+from app.auth.forms import LoginForm
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     try:
         next_page = request.args.get('next')
+        form = LoginForm()
         if request.method == 'POST':
-            email = request.form['email']
-            password = request.form['password']
+            email = form.email.data
+            password = form.password.data
             user = User.query.filter_by(email_hash=User.hash_email(email)).first()
             if user and user.check_password(password):
                 login_user(user, remember=False)
@@ -28,8 +30,8 @@ def login():
             else:
                 # error message
                 error = 'Invalid email or password'
-                return render_template('login.html', error=error)
-        return render_template('login.html')
+                return render_template('login.html', form=form, error=error)
+        return render_template('login.html', form=form)
     except TemplateNotFound:
         abort(404)
 
