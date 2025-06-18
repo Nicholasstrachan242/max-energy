@@ -30,14 +30,6 @@ USERS_TO_CREATE = [
         "password": "REDACTED",
         "role": "guest",
     },
-    {
-        "first_name": "Jane",
-        "last_name": "Doe",
-        "email": "jane@maxx-energy.com",
-        "password": "REDACTED",
-        "role": "manager",
-    },
-    
     # Add more users to this list as needed
 ]
 
@@ -73,9 +65,9 @@ def main():
                 print(f"Skipping {entry['email']}: Invalid role '{role}'. Only manager, employee, and guest roles are allowed.")
                 continue
 
-            # Check if user already exists. If so, skip. This prevents duplicates.
+            # Check if user already exists. If so, skip to prevent duplicates.
             email = entry["email"].strip().lower()
-            if User.query.filter_by(email=email).first():
+            if User.query.filter_by(email_hash=User.hash_email(email)).first():
                 print(f"Skipping: {email} already exists.")
                 continue
 
@@ -88,9 +80,11 @@ def main():
             user = User(
                 first_name=entry["first_name"],
                 last_name=entry["last_name"],
-                email=email,
                 role=entry["role"]
             )
+            # uses fernet encrpytion + SHA-256 hashing on email
+            # uses scrypt hashing on password
+            user.set_email(email)
             user.set_password(password)
             db.session.add(user)
             print(f"User {email} ready to be added to db.")

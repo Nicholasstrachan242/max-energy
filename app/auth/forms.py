@@ -1,13 +1,14 @@
 # forms module for flask-wtf. 
-# This will be used to prevent CSRF attacks on the login page or any add'l forms as needed.
+# CSRF protection initialized globally in __init__.py.
+# Forms created here are to be imported into their respective routes.
+# Templates are to be updated to use flask-wtf fields.
 
 # purpose of implementing flask-wtf:
 # - make login form dynamic and more secure
 # - validate the input fields server-side
-# - ensure that the form is properly rendered in the template
+# - ensure that the form is always properly rendered in the template
 # - have added security with CSRF token
-# - scalable form fields 
-# - error logging
+# - scalable forms
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
@@ -19,5 +20,5 @@ class LoginForm(FlaskForm):
     submit = SubmitField('Log In')
 
     # TODO: 
-    # 1) import this form into auth.py and set up the login page
-    # 2) update the login.html template to use flask-wtf field rendering and form.hidden_tag()
+    # - import this form into auth.py
+    # - update the login.html template to use flask-wtf field rendering and form.hidden_tag()

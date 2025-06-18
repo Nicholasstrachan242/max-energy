@@ -2,13 +2,13 @@ import functools
 from flask import Blueprint, redirect, render_template, request, session, url_for, abort, flash
 from jinja2 import TemplateNotFound
 from werkzeug.security import check_password_hash, generate_password_hash
-from app.models.User import User
+from app.models import User
 from flask_login import login_user, logout_user, login_required
 from datetime import datetime, timezone
 from urllib.parse import urlparse, urljoin
+from app import db
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
-
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     try:
@@ -16,7 +16,7 @@ def login():
         if request.method == 'POST':
             email = request.form['email']
             password = request.form['password']
-            user = User.query.filter_by(email=email).first()
+            user = User.query.filter_by(email_hash=User.hash_email(email)).first()
             if user and user.check_password(password):
                 login_user(user, remember=False)
                 user.last_login = datetime.now(timezone.utc)

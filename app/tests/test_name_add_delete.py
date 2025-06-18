@@ -14,13 +14,11 @@ def app():
         'WTF_CSRF_ENABLED': False
     })
     with app.app_context():
-        db.create_all()
         yield app
         db.session.remove()
-        db.drop_all()
 
 # Create session for each test. Flask-SQLAlchemy automatically sets up engine and scoped session.
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def session(app):
     with app.app_context():
         # Start a transaction
@@ -28,19 +26,19 @@ def session(app):
         
         yield db.session
         
+        # rollback the transaction to clean up
         db.session.rollback()
         db.session.remove()
 
-#Test 1: Add 1 row to table, return the row. Make sure it doesn't already exist.
+#Test 1: Add 1 row to table, return the row.
 def test_create_one(session):
-    # check if row already exists
-    existing_row = session.query(Names).filter_by(firstname='Temporary', lastname='User').first()
-    if existing_row:
-        pytest.fail("User already exists. Delete the row and try again.")
-    else:
-        name = Names(firstname='Temporary', lastname='User')
-        session.add(name)
-        session.commit()
+    # Clear existing data
+    session.query(Names).delete()
+    session.commit()
+    
+    name = Names(firstname='Temporary', lastname='User')
+    session.add(name)
+    session.commit()
 
     result = session.query(Names).filter_by(firstname='Temporary', lastname='User').first()
 
@@ -51,6 +49,10 @@ def test_create_one(session):
 
 #Test 2: Create a row, then delete it. Confirm that it is deleted.
 def test_delete_one(session):
+    # Clear existing data
+    session.query(Names).delete()
+    session.commit()
+    
     # Create a row
     name = Names(firstname='DeleteThis', lastname='User')
     session.add(name)
@@ -58,14 +60,12 @@ def test_delete_one(session):
     
     # Check if row exists and delete it
     existing_row = session.query(Names).filter_by(firstname='DeleteThis', lastname='User').first()
+    assert existing_row is not None, "Row was not created properly"
     
-    if existing_row:
-        session.delete(existing_row)
-        session.commit()
-        
-        # Confirm that the row was deleted
-        deleted_row = session.query(Names).filter_by(firstname='DeleteThis', lastname='User').first()
-        assert deleted_row is None, "Row was not properly deleted"
-    else:
-        pytest.fail("User does not exist. Add the row and try again.")
+    session.delete(existing_row)
+    session.commit()
+    
+    # Confirm that the row was deleted
+    deleted_row = session.query(Names).filter_by(firstname='DeleteThis', lastname='User').first()
+    assert deleted_row is None, "Row was not properly deleted"
 

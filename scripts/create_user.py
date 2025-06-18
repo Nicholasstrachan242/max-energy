@@ -44,7 +44,7 @@ def main():
                 sys.exit(1)
                 
         email = input("Email: ").strip().lower()
-        if User.query.filter_by(email=email).first():
+        if User.query.filter_by(email_hash=User.hash_email(email)).first():
             print("Error: This email is already registered. Cancelling user creation.")
             sys.exit(1)
         
@@ -72,9 +72,11 @@ def main():
         user = User(
             first_name=first_name,
             last_name=last_name,
-            email=email,
             role=role
         )
+        # uses fernet encrpytion + SHA-256 hashing on email
+        # uses scrypt hashing on password
+        user.set_email(email)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()

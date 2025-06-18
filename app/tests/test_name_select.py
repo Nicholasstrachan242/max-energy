@@ -8,11 +8,6 @@ import pytest
 from app import create_app, db
 from app.models.Names import Names
 
- # Create 50 test rows with generated FirstName{number} and LastName{number}
-test_names = []
-for i in range(50):
-    test_names.append(Names(firstname=f'FirstName{i}', lastname=f'LastName{i}'))
-
 @pytest.fixture
 def app():
     app = create_app({
@@ -20,13 +15,11 @@ def app():
         'WTF_CSRF_ENABLED': False
     })
     with app.app_context():
-        db.create_all()
         yield app
         db.session.remove()
-        db.drop_all()
 
 # Create session for each test. Flask-SQLAlchemy automatically sets up engine and scoped session.
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def session(app):
     with app.app_context():
         # Start a transaction
@@ -35,11 +28,17 @@ def session(app):
         
         yield db.session
         
+        # Rollback the transaction to clean up
         db.session.rollback()
         db.session.remove()
 
 # TEST 1: pass in 2 rows manually, return only the first row in ascending order by id.
 def test_select_first(session):
+    # clear existing data
+    session.query(Names).delete()
+    session.commit()
+    
+    # create test data
     name1 = Names(firstname='John', lastname='Doe')
     name2 = Names(firstname='Big', lastname='Chungus')
     session.add_all([name1, name2])
@@ -56,6 +55,12 @@ def test_select_first(session):
 
 # TEST 2: select 50 rows, return selected rows in alphabetical order by lastname.
 def test_select_50_rows(session):
+    # clear existing data
+    session.query(Names).delete()
+    session.commit()
+    
+    # create test data
+    test_names = [Names(firstname=f'FirstName{i}', lastname=f'LastName{i}') for i in range(50)]
     session.add_all(test_names)
     session.commit()
 
