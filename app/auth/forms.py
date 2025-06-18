@@ -4,7 +4,7 @@
 # purpose of implementing flask-wtf:
 # - make login form dynamic and more secure
 # - validate the input fields server-side
-# - ensure that the form is properly rendered in the template
+# - ensure that the form is always properly rendered in the template
 # - have added security with CSRF token
 # - scalable forms
 

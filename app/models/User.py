@@ -9,14 +9,21 @@ import os
 from cryptography.fernet import Fernet
 import hashlib
 
-# TODO: encrypt+hash emails
-# Purpose: make sure no plaintext emails are stored and that they can still be used as unique identifiers for users
+# Hash passwords (w/ salt)
+# Objectives:
+# 1) Make sure no plaintext passwords are stored.
+# 2) Maximum security.
+# Using Scrypt algorithm via werkzeug.security.generate_password_hash() as it is intentionally slower and considered modern/secure.
+
+# Encrypt+hash emails.
+# Objectives: 
+# 1) Make sure no plaintext emails are stored.
+# 2) Make sure that they can still be used as unique identifiers for users to allow login.
 # This will allow for fast lookup and login using the hash, and then decryption can happen as needed.
 # Would be able to use this for password reset functionality as well.
 
-# fernet to be used for symmetric encryption of emails using a secret key. KEEP THIS KEY SAFE.
-# hashlib's SHA-256 to be used for deterministic (same input -> same output), fast, unsalted hashing of emails. 
-# not using werkzeug.security.generate_password_hash() because it is not deterministic and is slower.
+# fernet used for symmetric encryption of emails using a secret key. KEEP THIS KEY SAFE.
+# hashlib's SHA-256 used for deterministic (same input -> same output), fast, unsalted hashing of emails.
 
 def get_fernet():
     key = os.environ.get('EMAIL_ENCRYPTION_KEY')
