@@ -6,11 +6,12 @@ from app.models import User
 from flask_login import login_user, logout_user, login_required
 from datetime import datetime, timezone
 from urllib.parse import urlparse, urljoin
-from app import db
+from app import db, limiter
 from app.auth.forms import LoginForm
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 @auth_bp.route('/login', methods=['GET', 'POST'])
+@limiter.limit("10 per minute")
 def login():
     try:
         next_page = request.args.get('next')
