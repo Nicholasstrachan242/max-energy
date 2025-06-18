@@ -1,0 +1,24 @@
+<!-- HTTP error code 429, Too Many Requests. Redirect to this page if user hits rate limit -->
+
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base.html" %}
+{% block title %}Too Many Requests{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='error.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <h1>Too Many Requests</h1>
+    <p>
+        You have exceeded the maximum number of allowed requests. Please wait before trying again.
+    </p>
+    <p>
+        If you require any assistance, please contact IT Support.
+    </p>
+    <a href="{{ url_for('home.home_page') }}" class="button">Return to Home</a>
+</div>
+{% endblock %}
+
+</html>

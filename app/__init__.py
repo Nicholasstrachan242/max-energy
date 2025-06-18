@@ -10,6 +10,7 @@ from flask_wtf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+
 # Load environment variables
 load_dotenv()
 
@@ -104,39 +105,6 @@ def create_app(test_config=None):
             default_limits=["200 per day", "50 per hour"]
         )
 
-    # Error handling w/ json payloads, useful if making API
-    """
-    def register_error_handlers(app):
-        # error 403 - Forbidden
-        @app.errorhandler(403)
-        def forbidden_handler(e):
-            return jsonify(error="Forbidden. You are not authorized to access this page. If you believe this is in error, please contact IT support"), 403
-        
-        # error 404 - Not Found
-        @app.errorhandler(404)
-        def not_found_handler(e):
-            return jsonify(error="Resource not found."), 404
-        
-        # error 429 - Rate Limit
-        @app.errorhandler(429)
-        def rate_limit_handler(e):
-            return jsonify(error="Too many requests, please try again later."), 429
-        
-        # error 500 - Internal Server Error
-        @app.errorhandler(500)
-        def server_error_handler(e):
-            return jsonify(error="Oops, something went wrong -- INTERNAL SERVER ERROR --"), 500
-        
-        # error 502 - Bad Gateway
-        @app.errorhandler(502)
-        def bad_gatweay_handler(e):
-            return jsonify(error="Bad gateway."), 502
-        
-        # error 503 - Service Temporarily Unavailable
-        @app.errorhandler(503)
-        def service_unavailable_handler(e):
-            return jsonify(error="Service temporarily unavailable."), 503
-    """
 
     # setup login manager
     login_manager.login_view = 'auth.login'
@@ -163,7 +131,8 @@ def create_app(test_config=None):
     app.register_blueprint(contact)
     app.register_blueprint(admin)
 
-    # jsonify error handler
-    # register_error_handlers(app)
+    # custom error handling
+    from app.error_handlers import register_error_handlers
+    register_error_handlers(app)
 
     return app
