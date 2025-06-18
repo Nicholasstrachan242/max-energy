@@ -12,7 +12,7 @@ import hashlib
 # Hash passwords (w/ salt)
 # Objectives:
 # 1) Make sure no plaintext passwords are stored.
-# 2) Maximum security.
+# 2) Security is top priority.
 # Using Scrypt algorithm via werkzeug.security.generate_password_hash() as it is intentionally slower and considered modern/secure.
 
 # Encrypt+hash emails.

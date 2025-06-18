@@ -6,6 +6,7 @@ from sqlalchemy.orm import DeclarativeBase
 from flask_login import LoginManager
 from flask_migrate import Migrate
 from datetime import timedelta
+from flask_wtf import CSRFProtect
 
 # Load environment variables
 load_dotenv()
@@ -20,6 +21,9 @@ login_manager = LoginManager()
 # handle login messages for pages that require login
 login_manager.login_message = "Please log in to view this page."
 login_manager.login_message_category = "warning"
+
+# initialize CSRFProtect
+csrf = CSRFProtect()
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
