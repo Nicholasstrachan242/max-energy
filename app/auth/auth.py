@@ -13,11 +13,12 @@ from app.auth.forms import LoginForm, ChangePasswordForm
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 # log in user
 @auth_bp.route('/login', methods=['GET', 'POST'])
-@limiter.limit("10 per minute")
+@limiter.limit("5 per minute")
 def login():
     try:
         next_page = request.args.get('next')
         form = LoginForm()
+        error = None
         if request.method == 'POST':
             email = form.email.data
             password = form.password.data
@@ -33,8 +34,7 @@ def login():
             else:
                 # error message
                 error = 'Invalid email or password'
-                return render_template('login.html', form=form, error=error)
-        return render_template('login.html', form=form)
+        return render_template('login.html', form=form, error=error)
     except TemplateNotFound:
         abort(404)
 
@@ -46,23 +46,26 @@ def logout():
     flash('You have been logged out successfully.', 'info')
     return redirect(url_for('auth.login'))
 
-# change password - Only allowed for logged in users and using existing password
+# Change password - Only allowed for logged in users and using existing password
+# error messages displayed when staying on same page
+# flash message displayed after successful change and redirect
 @auth_bp.route('/change-password', methods=['GET', 'POST'])
 @login_required
 def change_password():
     form = ChangePasswordForm()
+    error = None
     if form.validate_on_submit():
         if not current_user.check_password(form.current_password.data):
-            flash('Current password is incorrect.', 'error')
+            error = 'Current password is incorrect.'
         elif form.new_password.data == form.current_password.data:
-            flash('New password must be different from current password.', 'error')
+            error = 'New password must be different from current password.'
         else:
             current_user.set_password(form.new_password.data)
             from app import db
             db.session.commit()
             flash('Your password has been changed successfully.', 'info')
             return redirect(url_for('dashboard.dashboard_page'))
-    return render_template('change-password.html', form=form)
+    return render_template('change-password.html', form=form, error=error)
 
 
 # prevent attacks that redirect to external sites
