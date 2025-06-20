@@ -13,19 +13,6 @@
   transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
-/* color pulse animation was being used for h1*/
-/*
-@keyframes colorPulse {
-  0%,
-  100% {
-    color: rgb(255, 240, 25);
-  }
-  50% {
-    color: rgb(70, 68, 68);
-  }
-}
-*/
-
 @keyframes flyInUp {
   0% {
     opacity: 0;

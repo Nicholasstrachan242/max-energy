@@ -18,20 +18,64 @@
         <div class="feature-box">
             <h3>Your Feed</h3>
             <div class="feature-content">
-                ----- Relevant information goes here -----
+                ---- This panel is accessible to everyone. ---- <br>
+
+                Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque
+                sem placerat.
+                In id cursus mi pretium tellus duis convallis.
             </div>
         </div>
         <div class="feature-box">
-            <h3>Role-specific actions</h3>
+            <h3>Testing here</h3>
             <div class="feature-content">
-                <a href="{{ url_for('admin.admins_only') }}">Click this link ONLY if you are an admin.</a>
+                <a href="{{ url_for('admin.admins_only') }}">Test link to admin panel</a>
                 <p>Note: This link is purposely shown for all roles for demonstration purposes.
                     Normally, it would be hidden from non-admin users.</p>
             </div>
         </div>
+
+        {% if user.role == 'admin' %}
+        <div class="feature-box">
+            <h3>Admin Panel</h3>
+            <div class="feature-content">
+                <a href="{{ url_for('admin.admins_only') }}">Admin Control Panel</a>
+                <p>Note: This panel and its included link should only visible if user is logged in as admin.</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if user.role == 'employee' or user.role == 'admin'%}
+        <div class="feature-box">
+            <h3>Employee Panel</h3>
+            <div class="feature-content">
+                <p>Note: This panel should show information that is only relevant to employees. Admins should also have
+                    access to this.</p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if user.role == 'executive' or user.role == 'admin'%}
+        <div class="feature-box">
+            <h3>Executive Panel</h3>
+            <div class="feature-content">
+                <p>Note: Only Executives or Admins should see this panel. <br>
+
+                    This panel might show high-level company information essential to
+                </p>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if user.role == 'manager' or user.role == 'executive' or user.role == 'admin'%}
+        <div class="feature-box">
+            <h3>Manager Panel</h3>
+            <div class="feature-content">
+                <p>Note: Managers, Executives, and Admins should all see this panel. </p>
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
-
 {% endblock %}
 
 </html>

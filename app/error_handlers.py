@@ -15,3 +15,11 @@ def register_error_handlers(app):
     @app.errorhandler(429)
     def rate_limit_handler(e):
         return redirect(url_for('home.too_many_requests_page'))
+    
+    @app.errorhandler(403)
+    def forbidden(e):
+        return redirect(url_for('home.forbidden_page'))
+    
+    @app.errorhandler(500)
+    def server_error(e):
+        return redirect(url_for('home.server_error_page'))

@@ -1,0 +1,24 @@
+<!-- HTTP error code 500, Internal Server Error. Redirect to this page if server is unable to complete request. -->
+
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base.html" %}
+{% block title %}Internal Server Error{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='error.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <h1>Internal Server Error</h1>
+    <p>
+        Something went wrong - The server was unable to complete your request. Please try again later.
+    </p>
+    <p>
+        If this problem persists, please contact IT Support.
+    </p>
+    <a href="{{ url_for('home.home_page') }}" class="button">Return to Home</a>
+</div>
+{% endblock %}
+
+</html>
