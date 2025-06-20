@@ -1,4 +1,4 @@
-import functools
+import functools, logging
 from flask import Blueprint, redirect, render_template, request, session, url_for, abort, flash
 from jinja2 import TemplateNotFound
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlparse, urljoin
 from app import db, limiter
 from app.auth.forms import LoginForm, ChangePasswordForm
+
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 # log in user

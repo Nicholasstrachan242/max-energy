@@ -1,4 +1,5 @@
-import os
+import os, logging
+from logging.handlers import TimedRotatingFileHandler
 from flask import Flask, jsonify
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
@@ -10,6 +11,23 @@ from flask_wtf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+
+# TODO LOGGING
+"""
+General events like info, and debugging logs to be written to file.
+
+Consider logging auth events like logins and password changes to a new table in DB. 
+Schema would probably consist of:
+
+**id** - unique, auto increment
+**user id** - can be null, but if event is tied to user, show their id
+**event type** - login, logout, failed login attempt, password change attempt
+**timestamp** - (utc since it's already being used everywhere else?
+**ip address** - would be nice
+**user agent** - user-agent from browser/client to help identify device
+**details** - more verbose info
+
+"""
 
 # Load environment variables
 load_dotenv()
@@ -33,6 +51,13 @@ limiter = Limiter(get_remote_address)
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+
+    # TODO setup logging
+    #if not os.path.exists('logs'):
+    #    os.mkdir('logs')
+    #file_handler = TimedRotatingFileHandler('logs/app.log', maxBytes=9000, backupCount=5)
+    #file_handler.setFormatter(logging.Formatter())
+
 
     # determine if testing.
     # TESTING FLAG IS IN .env
