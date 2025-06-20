@@ -45,12 +45,6 @@ input {
   box-sizing: border-box;
 }
 
-.error-message {
-  color: red;
-  font-size: 16px;
-  margin-top: 10px;
-}
-
 /* Navigation bar styling */
 nav {
   background-color: #333;
@@ -87,6 +81,15 @@ nav a:hover {
 .flash.error {
   color: red;
   font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+/* error messages */
+.error-message {
+  color: red;
+  font-size: 16px;
+  margin-top: 15px;
   margin-bottom: 15px;
 }
 

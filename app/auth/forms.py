@@ -12,9 +12,29 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+import re
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')
+
+class ChangePasswordForm(FlaskForm):
+    current_password= PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired()])
+    confirm_new_password = PasswordField('Confirm New Password', validators=[
+        DataRequired(),
+        EqualTo('new_password', message='Passwords must match.')])
+    submit = SubmitField('Change Password')
+
+    def validate_new_password(self, field):
+        password = field.data
+        if len(password) < 12:
+            raise ValidationError('Password must be at least 12 characters long.')
+        if not re.search(r'[A-Z]', password):
+            raise ValidationError('Password must contain at least one uppercase letter.')
+        if not re.search(r'\d', password):
+            raise ValidationError('Password must contain at least one number.')
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-\\/\[\]=+;~`]', password):
+            raise ValidationError('Password must contain at least one symbol.')
