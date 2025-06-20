@@ -214,9 +214,31 @@
             cursor: pointer;
             font-size: 1.5rem;
         }
+
+        .user-mgmt-btn {
+            background: #FBB019;
+            color: #fff !important;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin: 2rem 0 1.5rem 0;
+            display: inline-block;
+            box-shadow: 0 2px 8px #fbb01933;
+            transition: background 0.2s, color 0.2s;
+        }
+        .user-mgmt-btn:hover {
+            background: #d89200;
+            color: #fff !important;
+        }
     </style>
 </head>
 <body>
+    {% if session['role'] == 'admin' %}
+        <a href="{{ url_for('user_management_auth') }}" class="user-mgmt-btn">User Management</a>
+    {% endif %}
     <div class="container">
         <div class="header">
             <div class="welcome-message">
@@ -507,6 +529,34 @@
             </form>
         </div>
     </div>
+
+    {% if audit_logs %}
+    <div style="margin-top:2.5rem;">
+        <h2 style="color:#496DA7;">Recent Audit Logs</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Admin</th>
+                    <th>Action</th>
+                    <th>Target</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in audit_logs %}
+                <tr>
+                    <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ log.admin_username }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.target }}</td>
+                    <td>{{ log.details }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 
     <script>
         function showTab(tabId) {

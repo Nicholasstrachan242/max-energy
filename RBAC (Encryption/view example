@@ -1,4 +1,4 @@
-from .Algorithm import db
+from .Algorithm import db # type: ignore
 
 def list_roles():
     roles = db(db.role).select()

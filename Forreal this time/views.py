@@ -5,4 +5,3 @@
     <a href="{{ url_for('view_reports') }}" class="btn btn-primary">View Reports</a>
 {% endif %}
 {% endif %}
-{% endif %}

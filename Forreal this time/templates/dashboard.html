@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - RBAC System</title>
+    <title>Dashboard - MAXX ENERGY</title>
     <style>
         * {
             margin: 0;
@@ -16,6 +16,21 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 2rem;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("{{ url_for('static', filename='b14c8129-fd8f-4f1e-a50d-23102aafbfe9.png') }}");
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.5;
+            z-index: -1;
         }
 
         .dashboard-container {
@@ -100,6 +115,9 @@
     <div class="dashboard-container">
         <h1>Welcome, {{ session['username'] }}!</h1>
         <p>This is your dashboard.</p>
+        {% if session['role'] == 'admin' %}
+            <a href="{{ url_for('user_management_auth') }}" class="btn btn-primary" style="margin-bottom:1.5rem;display:inline-block;">User Management</a>
+        {% endif %}
         <div style="margin-top:2rem;">
             {% if 'manage_users' in user_permissions %}
                 <a href="{{ url_for('role_management') }}" class="btn btn-primary">User & Role Management</a><br><br>

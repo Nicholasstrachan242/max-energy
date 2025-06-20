@@ -80,3 +80,5 @@
 **If you want to use environment variables for secrets and database URI, use `python-dotenv` and a `.env` file.**
 
 **For any questions or further integration help, refer to this notes file or ask your team lead!**
+
+

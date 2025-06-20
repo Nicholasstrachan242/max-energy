@@ -3,9 +3,12 @@ from functools import wraps
 from flask_wtf.csrf import CSRFProtect # type: ignore
 import secrets
 from datetime import datetime
-from db import db, User, Role, Permission
+from db import db, User, Role, Permission, AuditLog
+import re
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='statics')
 app.config['SECRET_KEY'] = secrets.token_hex(32)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rbac.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -13,6 +16,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Initialize extensions
 db.init_app(app)
 csrf = CSRFProtect(app)
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://",
+)
 
 # Create database tables and seed roles
 with app.app_context():
@@ -100,6 +109,7 @@ def index():
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
 def login():
     if request.method == 'POST':
         username = request.form.get('username', '').strip()
@@ -157,31 +167,34 @@ def role_management():
     users = User.query.all()
     roles = Role.query.all()
     permissions = Permission.query.all()
+    audit_logs = AuditLog.query.order_by(AuditLog.timestamp.desc()).limit(10).all()
     return render_template('role_management.html', 
                          users=users, 
                          roles=roles, 
-                         permissions=permissions)
+                         permissions=permissions,
+                         audit_logs=audit_logs)
 
 @app.route('/add_user', methods=['POST'])
 @admin_required
 def add_user():
     username = request.form['username']
+    password = request.form['password']
     role_name = request.form['role']
     
     if User.query.filter_by(username=username).first():
-        flash('User already exists')
+        flash('User already exists', 'danger')
     else:
         role = Role.query.filter_by(name=role_name).first()
         if role:
             user = User(username=username, role=role)
-            user.set_password('default_password')  # In production, generate a secure password
+            user.set_password(password)
             db.session.add(user)
             db.session.commit()
-            flash('User added successfully')
+            flash('User added successfully', 'success')
         else:
-            flash('Invalid role')
+            flash('Invalid role selected', 'danger')
     
-    return redirect(url_for('role_management'))
+    return redirect(url_for('user_management'))
 
 @app.route('/edit_user/<int:user_id>', methods=['POST'])
 @admin_required
@@ -193,11 +206,11 @@ def edit_user(user_id):
     if role:
         user.role = role
         db.session.commit()
-        flash('User updated successfully')
+        flash('User updated successfully', 'success')
     else:
-        flash('Invalid role')
+        flash('Invalid role', 'danger')
     
-    return redirect(url_for('role_management'))
+    return redirect(url_for('user_management'))
 
 @app.route('/delete_user/<int:user_id>', methods=['POST'])
 @admin_required
@@ -206,25 +219,29 @@ def delete_user(user_id):
     if user.username == 'admin':
         flash('Cannot delete admin user')
     else:
+        db.session.add(AuditLog(admin_username=session['username'], action='delete_user', target=user.username, details='User deleted.'))
         db.session.delete(user)
         db.session.commit()
         flash('User deleted successfully')
-    return redirect(url_for('role_management'))
+    return redirect(url_for('user_management'))
 
 @app.route('/add_role', methods=['POST'])
 @admin_required
 def add_role():
-    name = request.form['role_name']
-    description = request.form['description']
-    
+    name = request.form['role_name'].strip()
+    description = request.form['description'].strip()
+    if not name or not re.match(r'^[A-Za-z0-9_ ]{3,32}$', name):
+        flash('Invalid role name. Use 3-32 alphanumeric characters, spaces, or underscores.')
+        return redirect(url_for('role_management'))
     if Role.query.filter_by(name=name).first():
         flash('Role already exists')
     else:
         role = Role(name=name, description=description)
         db.session.add(role)
         db.session.commit()
+        db.session.add(AuditLog(admin_username=session['username'], action='add_role', target=name, details='Role added.'))
+        db.session.commit()
         flash('Role added successfully')
-    
     return redirect(url_for('role_management'))
 
 @app.route('/edit_role/<int:role_id>', methods=['POST'])
@@ -234,9 +251,10 @@ def edit_role(role_id):
     if role.name == 'admin':
         flash('Cannot edit admin role')
         return redirect(url_for('role_management'))
-    
     role.name = request.form['role_name']
     role.description = request.form['description']
+    db.session.commit()
+    db.session.add(AuditLog(admin_username=session['username'], action='edit_role', target=role.name, details='Role edited.'))
     db.session.commit()
     flash('Role updated successfully')
     return redirect(url_for('role_management'))
@@ -248,6 +266,7 @@ def delete_role(role_id):
     if role.name == 'admin':
         flash('Cannot delete admin role')
     else:
+        db.session.add(AuditLog(admin_username=session['username'], action='delete_role', target=role.name, details='Role deleted.'))
         db.session.delete(role)
         db.session.commit()
         flash('Role deleted successfully')
@@ -344,6 +363,81 @@ def assign_permissions_admin():
         flash('Permissions updated for role: ' + role.name)
         return redirect(url_for('assign_permissions_admin'))
     return render_template('assign_permissions.html', roles=roles, permissions=permissions)
+
+@app.route('/access_denied')
+def access_denied():
+    return render_template('access_denied.html')
+
+@app.route('/user-management-auth', methods=['GET', 'POST'])
+@admin_required
+def user_management_auth():
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '').strip()
+        user = User.query.filter_by(username=username).first()
+        if user and user.role.name == 'admin' and user.check_password(password):
+            session['user_mgmt_auth'] = True
+            db.session.add(AuditLog(admin_username=username, action='admin_auth', target='user_management', details='Admin authenticated for user management access.'))
+            db.session.commit()
+            return redirect(url_for('user_management'))
+        else:
+            flash('Invalid admin credentials.')
+    return render_template('user_management_auth.html')
+
+@app.route('/user-management')
+@admin_required
+def user_management():
+    # Require re-authentication for user management
+    if not session.get('user_mgmt_auth'):
+        return redirect(url_for('user_management_auth'))
+    user = User.query.filter_by(username=session['username']).first()
+    user_permissions = [perm.name for perm in user.role.permissions]
+    users = User.query.all()
+    audit_logs = AuditLog.query.order_by(AuditLog.timestamp.desc()).limit(10).all()
+    roles = Role.query.order_by(Role.name).all()
+    return render_template('user_management.html', users=users, user_permissions=user_permissions, audit_logs=audit_logs, roles=roles)
+
+@app.route('/reset_user_password/<int:user_id>', methods=['GET', 'POST'])
+@admin_required
+def reset_user_password(user_id):
+    user = User.query.get_or_404(user_id)
+    if user.username == 'admin':
+        flash('Cannot reset password for admin user.')
+        return redirect(url_for('user_management'))
+    if request.method == 'POST':
+        new_password = request.form.get('new_password', '').strip()
+        if not new_password or len(new_password) < 13:
+            flash('Password must be at least 13 characters.')
+        else:
+            user.set_password(new_password)
+            db.session.commit()
+            db.session.add(AuditLog(admin_username=session['username'], action='reset_password', target=user.username, details='Password reset by admin.'))
+            db.session.commit()
+            flash(f"Password for {user.username} has been reset.")
+            return redirect(url_for('user_management'))
+    return render_template('reset_user_password.html', user=user)
+
+@app.route('/toggle_user_status/<int:user_id>', methods=['POST'])
+@admin_required
+def toggle_user_status(user_id):
+    user = User.query.get_or_404(user_id)
+    if user.username == 'admin':
+        flash('Cannot deactivate/reactivate admin user.')
+    else:
+        if user.status == 'active':
+            user.status = 'inactive'
+            db.session.add(AuditLog(admin_username=session['username'], action='deactivate_user', target=user.username, details='User deactivated.'))
+            flash(f"{user.username} has been deactivated.")
+        else:
+            user.status = 'active'
+            db.session.add(AuditLog(admin_username=session['username'], action='reactivate_user', target=user.username, details='User reactivated.'))
+            flash(f"{user.username} has been reactivated.")
+        db.session.commit()
+    return redirect(url_for('user_management'))
+
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    return render_template('429.html'), 429
 
 if __name__ == '__main__':
     app.run(debug=True)

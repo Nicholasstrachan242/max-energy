@@ -43,3 +43,11 @@ role_permission = db.Table('role_permission',
     db.Column('role_id', db.Integer, db.ForeignKey('role.id'), primary_key=True),
     db.Column('permission_id', db.Integer, db.ForeignKey('permission.id'), primary_key=True)
 )
+
+class AuditLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    admin_username = db.Column(db.String(80), nullable=False)
+    action = db.Column(db.String(100), nullable=False)
+    target = db.Column(db.String(100), nullable=False)
+    details = db.Column(db.String(255))
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)

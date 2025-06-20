@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - MAXX ENERGY</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #496DA7 0%, #FBB019 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            max-width: 900px;
+            margin: 3rem auto;
+            border-radius: 12px;
+            box-shadow: 0 0 24px #496DA744;
+            padding: 2.5rem 2rem;
+        }
+        h1 {
+            color: #496DA7;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background: #f5f7fa;
+            color: #496DA7;
+            font-weight: 700;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .action-btn {
+            padding: 0.5rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-right: 0.5rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .edit-btn {
+            background: #FBB019;
+            color: #fff;
+        }
+        .edit-btn:hover {
+            background: #496DA7;
+            color: #fff;
+        }
+        .delete-btn {
+            background: #ff4d4d;
+            color: #fff;
+        }
+        .delete-btn:hover {
+            background: #2D2D2D;
+            color: #fff;
+        }
+        .add-user-btn {
+            background: #496DA7;
+            color: #fff;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            display: block;
+            margin-left: auto;
+        }
+        .add-user-btn:hover {
+            background: #FBB019;
+            color: #fff;
+        }
+        .no-permission {
+            color: #ff4d4d;
+            text-align: center;
+            font-size: 1.2rem;
+            margin-top: 2rem;
+        }
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgb(0,0,0); 
+            background-color: rgba(0,0,0,0.4); 
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Management</h1>
+        {% if 'manage_users' in user_permissions %}
+            {% if session['role'] == 'admin' %}
+                <a href="{{ url_for('dashboard') }}" class="add-user-btn" style="background:#496DA7;margin-bottom:1.5rem;">Dashboard</a>
+            {% endif %}
+            <button onclick="openModal('addUserModal')" class="add-user-btn">Add New User</button>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Last Login</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.role.name }}</td>
+                        <td>{{ user.status }}</td>
+                        <td>{{ user.last_login.strftime('%Y-%m-%d %H:%M:%S') if user.last_login else 'Never' }}</td>
+                        <td>
+                            <button onclick="openEditModal('{{ user.id }}', '{{ user.username }}', '{{ user.role.name }}')" class="action-btn edit-btn">Edit</button>
+                            {% if user.username != 'admin' %}
+                                <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}" style="display:inline;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this user?');">Delete</button>
+                                </form>
+                                <a href="{{ url_for('reset_user_password', user_id=user.id) }}" class="btn btn-warning btn-sm">Reset Password</a>
+                                <form method="POST" action="{{ url_for('toggle_user_status', user_id=user.id) }}" style="display:inline;">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    {% if user.status == 'active' %}
+                                        <button type="submit" class="action-btn delete-btn" style="background:#a0aec0; color:#2D2D2D;">Deactivate</button>
+                                    {% else %}
+                                        <button type="submit" class="action-btn edit-btn" style="background:#FBB019;">Reactivate</button>
+                                    {% endif %}
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="no-permission">You do not have permission to manage users.</div>
+        {% endif %}
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('editUserModal')">&times;</span>
+            <h2>Edit User</h2>
+            <form id="editUserForm" method="POST" action="">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="edit_username" name="username" readonly style="background:#eee;">
+                </div>
+                <div class="form-group">
+                    <label for="edit_role">Role</label>
+                    <select id="edit_role" name="role" required>
+                        {% for role in roles %}
+                            <option value="{{ role.name }}">{{ role.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="add-user-btn" style="width: 100%;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('addUserModal')">&times;</span>
+            <h2>Add New User</h2>
+            <form method="POST" action="{{ url_for('add_user') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="role">Role</label>
+                    <select id="role" name="role" required>
+                        {% for role in roles %}
+                            <option value="{{ role.name }}">{{ role.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="add-user-btn" style="width: 100%;">Add User</button>
+            </form>
+        </div>
+    </div>
+
+    {% if audit_logs %}
+    <div style="margin-top:2.5rem;">
+        <h2 style="color:#496DA7;">Recent Audit Logs</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Admin</th>
+                    <th>Action</th>
+                    <th>Target</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in audit_logs %}
+                <tr>
+                    <td>{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td>{{ log.admin_username }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.target }}</td>
+                    <td>{{ log.details }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <script>
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function openEditModal(userId, username, currentRole) {
+            const form = document.getElementById('editUserForm');
+            form.action = `/edit_user/${userId}`;
+            document.getElementById('edit_username').value = username;
+            const roleSelect = document.getElementById('edit_role');
+            for (let i = 0; i < roleSelect.options.length; i++) {
+                if (roleSelect.options[i].value === currentRole) {
+                    roleSelect.selectedIndex = i;
+                    break;
+                }
+            }
+            openModal('editUserModal');
+        }
+
+        // Close modal if user clicks outside of it
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal(event.target.id);
+            }
+        }
+    </script>
+</body>
+</html>

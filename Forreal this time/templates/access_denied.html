@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied - MAXX ENERGY</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #2D2D2D 0%, #FBB019 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .nba-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            opacity: 0.18;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .denied-container {
+            background: rgba(255,255,255,0.97);
+            padding: 2.5rem 3.5rem;
+            border-radius: 14px;
+            box-shadow: 0 0 24px #FBB01955;
+            text-align: center;
+            z-index: 1;
+            position: relative;
+        }
+        .denied-title {
+            font-size: 2.5rem;
+            color: #FBB019;
+            margin-bottom: 1rem;
+            font-weight: 900;
+            letter-spacing: 0.1rem;
+        }
+        .denied-desc {
+            color: #2D2D2D;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .reroute-link {
+            color: #fff;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 1.1rem;
+            border: 2px solid #496DA7;
+            border-radius: 6px;
+            padding: 0.5rem 1.2rem;
+            background: #496DA7;
+            transition: background 0.2s, color 0.2s;
+            display: inline-block;
+        }
+        .reroute-link:hover {
+            background: #FBB019;
+            color: #2D2D2D;
+            border-color: #FBB019;
+        }
+    </style>
+</head>
+<body>
+    <!-- GIF background removed -->
+    <div class="denied-container">
+        <div class="denied-title">Access Denied</div>
+        <div class="denied-desc">
+            You do not have permission to access this page or your account is not recognized in the MAXX ENERGY system.<br>
+            Please contact your administrator if you believe this is a mistake.<br><br>
+            {% if session.get('role') in ['admin', 'executive', 'manager', 'staff'] %}
+                <a href="{{ url_for('dashboard') }}" class="reroute-link">Go to Dashboard</a>
+            {% elif session.get('role') == 'guest' %}
+                <a href="{{ url_for('home') }}" class="reroute-link">Go to Home</a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="reroute-link">Back to Login</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
