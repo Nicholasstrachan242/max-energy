@@ -1,0 +1,25 @@
+<!-- HTTP error code 403, Forbidden.
+ Redirect to this page if user tries to access a page they do not have permission for -->
+
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base.html" %}
+{% block title %}Access Forbidden{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='error.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <h1>Access Forbidden</h1>
+    <p>
+        You do not have the necessary permissions to access this page.
+    </p>
+    <p>
+        If you believe this was in error, please contact IT Support.
+    </p>
+    <a href="{{ url_for('home.home_page') }}" class="button">Return to Home</a>
+</div>
+{% endblock %}
+
+</html>

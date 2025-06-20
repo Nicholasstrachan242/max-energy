@@ -1,0 +1,49 @@
+/* error.css - stylesheet for error pages. As of now, only 429 is implemented */
+
+.error-container {
+  max-width: 450px;
+  margin: 60px auto 0 auto;
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px 28px 28px 28px;
+  box-shadow: 0 2px 18px rgba(60, 72, 88, 0.16);
+  text-align: center;
+  border: 1px solid #e0e0e0;
+}
+
+.error-container h1 {
+  color: #d32f2f;
+  font-size: 2.2rem;
+  margin-bottom: 18px;
+}
+
+.error-container p {
+  color: #333;
+  margin-bottom: 16px;
+  font-size: 1.07rem;
+}
+
+.error-container strong {
+  color: #1976d2;
+}
+
+.error-container .button,
+.error-container a.button {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 10px 28px;
+  background: #1976d2;
+  color: #fff !important;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.error-container .button:hover,
+.error-container a.button:hover {
+  background: #1256a0;
+}
