@@ -18,8 +18,8 @@ venv/
 .env
 **/.env
 
-# log files
-*.log
+# log files (but keep folder to maintain structure)
+logs/*.log
 
 #instance files
 /instance/
