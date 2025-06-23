@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 from urllib.parse import urlparse, urljoin
 from app import db, limiter
 from app.auth.forms import LoginForm, ChangePasswordForm
+from app.auth.auth_logging import log_auth_event
 
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -24,24 +25,28 @@ def login():
             password = form.password.data
             user = User.query.filter_by(email_hash=User.hash_email(email)).first()
             if user and user.check_password(password):
+                # log user in + log event
                 login_user(user, remember=False)
                 user.last_login = datetime.now(timezone.utc)
+                log_auth_event("login", user_id=user.id)
                 from app import db
                 db.session.commit()
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page)
                 return redirect(url_for('dashboard.dashboard_page'))
             else:
-                # error message
+                # error message + log event
                 error = 'Invalid email or password'
+                log_auth_event("failed_login", details=f"Invalid email or password. Attempted email hash: {User.hash_email(email)}")
         return render_template('login.html', form=form, error=error)
     except TemplateNotFound:
         abort(404)
 
-# log out user
+# log out user + log event
 @auth_bp.route('/logout')
 @login_required
 def logout():
+    log_auth_event("logout", user_id=current_user.id)
     logout_user()
     flash('You have been logged out successfully.', 'info')
     return redirect(url_for('auth.login'))
@@ -55,14 +60,16 @@ def change_password():
     form = ChangePasswordForm()
     error = None
     if form.validate_on_submit():
-        if not current_user.check_password(form.current_password.data):
+        if not current_user.check_password(form.current_password.data): # log event if wrong password is used to attempt change
             error = 'Current password is incorrect.'
+            log_auth_event("failed_password_change", user_id=current_user.id, details=f"Attempt to change password failed due to using incorrect current password.")
         elif form.new_password.data == form.current_password.data:
             error = 'New password must be different from current password.'
-        else:
+        else: # success + log event
             current_user.set_password(form.new_password.data)
             from app import db
             db.session.commit()
+            log_auth_event("password_change", user_id=current_user.id)
             flash('Your password has been changed successfully.', 'info')
             return redirect(url_for('dashboard.dashboard_page'))
     return render_template('change-password.html', form=form, error=error)

@@ -11,24 +11,6 @@ from flask_wtf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
-
-# TODO LOGGING
-"""
-General events like info, and debugging logs to be written to file.
-
-Consider logging auth events like logins and password changes to a new table in DB. 
-Schema would probably consist of:
-
-**id** - unique, auto increment
-**user id** - can be null, but if event is tied to user, show their id
-**event type** - login, logout, failed login attempt, password change attempt
-**timestamp** - (utc since it's already being used everywhere else?
-**ip address** - would be nice
-**user agent** - user-agent from browser/client to help identify device
-**details** - more verbose info
-
-"""
-
 # Load environment variables
 load_dotenv()
 
@@ -86,7 +68,7 @@ def create_app(test_config=None):
             'REMEMBER_COOKIE_HTTPONLY': True, # prevents JS from accessing remember me cookie
             'REMEMBER_COOKIE_DURATION': timedelta(days=2),
             'REMEMBER_COOKIE_SAMESITE': 'Lax', # helps prevent CSRF attacks
-            'WTF_CSRF_ENABLED': True, # enable CSRF protection TODO: finish setting up CSRF protection on pages with forms
+            'WTF_CSRF_ENABLED': True, # enable CSRF protection
 
     }
 
