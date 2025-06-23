@@ -1,5 +1,5 @@
 import functools, logging
-from flask import Blueprint, redirect, render_template, request, session, url_for, abort, flash
+from flask import Blueprint, redirect, render_template, request, url_for, abort, flash
 from jinja2 import TemplateNotFound
 from werkzeug.security import check_password_hash, generate_password_hash
 from app.models import User
@@ -35,6 +35,7 @@ def init_login_manager(app):
     # handle unauthorized/unauthenticated access
     @login_manager.unauthorized_handler
     def unauthorized_callback():
+        flash(login_manager.login_message, login_manager.login_message_category)
         log_auth_event("unauthorized_access", details=f"Unauthenticated user attempted to access: {request.path}")
         return redirect(url_for('auth.login', next=request.path))
 

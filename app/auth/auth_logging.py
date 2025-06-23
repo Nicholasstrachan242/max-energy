@@ -4,6 +4,7 @@
 # - failed login attempt
 # - logout
 # - password change
+# - unauthorized/authenticated access
 
 from app import db
 from app.models import AuthEvent
@@ -13,7 +14,8 @@ from datetime import datetime, timezone
 def log_auth_event(event_type, user_id=None, details=None): # set None as default default for optional parameters
     try:
         ip = request.remote_addr if request else None
-        user_agent = request.user_agent.string if request and request.user_agent else None
+        user_agent = request.user_agent.string if request.user_agent.string else None
+        print("User-Agent string:", user_agent)
         event = AuthEvent(
             user_id=user_id,
             event_type=event_type,
@@ -28,4 +30,3 @@ def log_auth_event(event_type, user_id=None, details=None): # set None as defaul
         # do not crash app if log fails
         from flask import current_app
         current_app.logger.error(f"Failed to log auth event: {e}")
-
