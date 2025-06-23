@@ -9,6 +9,34 @@ from urllib.parse import urlparse, urljoin
 from app import db, limiter
 from app.auth.forms import LoginForm, ChangePasswordForm
 from app.auth.auth_logging import log_auth_event
+from flask_login import LoginManager
+
+# auth.py handles all authentication events that occur within the app.
+
+# initialize and set up login manager
+login_manager = LoginManager()
+
+def init_login_manager(app):
+    login_manager.init_app(app)
+
+    # set login view
+    login_manager.login_view = 'auth.login'
+
+    # handle login messages for pages that require login
+    login_manager.login_message = "Please log in to view this page."
+    login_manager.login_message_category = "warning"
+
+    # helper functions
+    @login_manager.user_loader
+    def load_user(user_id):
+        from app.models.User import User
+        return User.query.get(int(user_id))
+    
+    # handle unauthorized/unauthenticated access
+    @login_manager.unauthorized_handler
+    def unauthorized_callback():
+        log_auth_event("unauthorized_access", details=f"Unauthenticated user attempted to access: {request.path}")
+        return redirect(url_for('auth.login', next=request.path))
 
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')

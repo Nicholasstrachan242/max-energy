@@ -1,10 +1,9 @@
 import os, logging
 from logging.handlers import TimedRotatingFileHandler
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, redirect
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
-from flask_login import LoginManager
 from flask_migrate import Migrate
 from datetime import timedelta
 from flask_wtf import CSRFProtect
@@ -19,12 +18,6 @@ class Base(DeclarativeBase): pass
 db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
 
-# initialize LoginManager
-login_manager = LoginManager()
-# handle login messages for pages that require login
-login_manager.login_message = "Please log in to view this page."
-login_manager.login_message_category = "warning"
-
 # initialize CSRFProtect
 csrf = CSRFProtect()
 
@@ -34,7 +27,7 @@ limiter = Limiter(get_remote_address)
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
-    # TODO setup logging
+    # TODO setup logging to file
     #if not os.path.exists('logs'):
     #    os.mkdir('logs')
     #file_handler = TimedRotatingFileHandler('logs/app.log', maxBytes=9000, backupCount=5)
@@ -92,13 +85,14 @@ def create_app(test_config=None):
     # pass in config
     app.config.from_mapping(config)
 
-  
-
     # initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
-    login_manager.init_app(app)
     csrf.init_app(app)
+
+    # initialize login manager
+    from app.auth.auth import init_login_manager
+    init_login_manager(app)
 
     # Flask-Limiter setup
     # Use w/ redis for production (linux) and as-is in-memory for testing (windows)
@@ -111,14 +105,6 @@ def create_app(test_config=None):
             storage_uri=redis_url,
             default_limits=["200 per day", "50 per hour"]
         )
-
-
-    # setup login manager
-    login_manager.login_view = 'auth.login'
-    @login_manager.user_loader
-    def load_user(user_id):
-        from app.models.User import User
-        return User.query.get(int(user_id))
 
     # check for instance folder
     try:
