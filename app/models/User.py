@@ -36,13 +36,13 @@ class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True) # auto increments by default
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
-    # email = db.Column(db.String(50), unique=True, nullable=False) # replacing this with email_hash and email_encrypted
     email_hash = db.Column(db.String(200), unique=True, nullable=False)
     email_encrypted = db.Column(db.LargeBinary, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     role = db.Column(db.String(50), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     last_login = db.Column(db.DateTime, nullable=True)
+    is_active_flag = db.Column(db.Boolean, nullable=False, default=True) # accounts are set as active by default.
 
    
     # hash email function is static because it does not need to be tied to a specific user instance.
@@ -72,9 +72,8 @@ class User(UserMixin, db.Model):
     def is_authenticated(self):
         return True
 
-    # for use when adding activate/deactivate features
     def is_active(self):
-        return True
+        return self.is_active_flag
     
     # return string representation of user. This would be the hashed email.
     def __repr__(self):

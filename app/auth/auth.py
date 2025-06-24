@@ -54,6 +54,11 @@ def login():
             password = form.password.data
             user = User.query.filter_by(email_hash=User.hash_email(email)).first()
             if user and user.check_password(password):
+                # make sure account is active. Otherwise, deny access and log the event.
+                if not user.is_active():
+                    error = 'Your account has been deactivated. Please contact IT support.'
+                    log_auth_event("deactivated_login_attempt", user_id=user.id)
+                    return render_template('login.html', form=form, error=error)
                 # log user in + log event
                 login_user(user, remember=False)
                 user.last_login = datetime.now(timezone.utc)
