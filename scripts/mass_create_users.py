@@ -4,7 +4,7 @@ from app.auth.auth_logging import log_auth_event
 
 # WARNING: FOR INTERNAL ADMIN USE ONLY. Do not run or edit this script without prior authorization.
 
-# This script is used to create multiple users at once. It will skip duplicates and enforce password requirements.
+# This script can create multiple users at once. It will skip duplicates and enforce password requirements.
 
 # run script as module: python -m scripts.<script_name> (without .py extension)
 
@@ -21,14 +21,14 @@ USERS_TO_CREATE = [
         "first_name": "John",
         "last_name": "Doe",
         "email": "john@maxx-energy.com",
-        "password": "REDACTED",
+        "password": "--REDACTED--",
         "role": "employee",
     },
     {
         "first_name": "Alice",
         "last_name": "Smith",
         "email": "alice@maxx-energy.com",
-        "password": "REDACTED",
+        "password": "--REDACTED--",
         "role": "guest",
     },
     # Add more users to this list as needed

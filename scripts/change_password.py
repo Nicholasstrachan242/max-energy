@@ -3,9 +3,9 @@ from app.auth.auth_logging import log_auth_event
 
 # WARNING: FOR INTERNAL ADMIN USE ONLY. Do not run or edit this script without prior authorization.
 
-# This script allows for user password reset.
+# This script resets a user's password.
 # Expected use case is when a user forgets their password and cannot access their account.
-# A secure password must be created here. Please share the new password with the user in a secure manner.
+# A secure password must be created here. Please share the new password with the user through a secure channel.
 # The user will then have the ability to log into their account and change their own password through the site UI.
 
 # run script as module: python -m scripts.<script_name> (without .py extension)
