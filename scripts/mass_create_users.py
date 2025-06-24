@@ -1,7 +1,10 @@
-import os
-import sys
-import re
+import os, sys, re
 from datetime import datetime
+from app.auth.auth_logging import log_auth_event
+
+# WARNING: FOR INTERNAL ADMIN USE ONLY. Do not run or edit this script without prior authorization.
+
+# This script is used to create multiple users at once. It will skip duplicates and enforce password requirements.
 
 # Add the project root directory to Python path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -9,10 +12,6 @@ sys.path.insert(0, project_root)
 
 from app import create_app, db
 from app.models.User import User
-
-# WARNING: FOR INTERNAL ADMIN USE ONLY. Do not run or edit this script without prior authorization.
-
-# This script is used to create multiple users at once. It will skip duplicates and enforce password requirements.
 
 # List of dicts of users to create
 USERS_TO_CREATE = [
@@ -96,6 +95,9 @@ def main():
             db.session.rollback()
             print(f"Error adding users to database: {e}")
             sys.exit(1)
+    
+    # log this event
+    log_auth_event()
 
 if __name__ == "__main__":
     main()

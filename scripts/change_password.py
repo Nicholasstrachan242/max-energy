@@ -3,6 +3,11 @@ from app.auth.auth_logging import log_auth_event
 
 # WARNING: FOR INTERNAL ADMIN USE ONLY. Do not run or edit this script without prior authorization.
 
+# This script allows for user password reset.
+# Expected use case is when a user forgets their password and cannot access their account.
+# A secure password must be created here. Please share the new password with the user in a secure manner.
+# The user will then have the ability to log into their account and change their own password through the site UI.
+
 # Add the project root directory to Python path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, project_root)
@@ -29,26 +34,11 @@ def is_strong_password(password):
 def main():
     app = create_app()
     with app.app_context():
-        print("=== Maxx Energy Admin: Add User ===")
-        # role selection. Limited to admin, executive, manager, employee, guest
-        role = input("Role: [ manager | employee | guest ] ").strip().lower()
-        if role not in ["manager", "employee", "guest", "admin", "executive"]:
-            print("Invalid role. Please choose from: manager, employee, guest.")
+        email = input("Enter user email: ").strip()
+        user = User.query.filter_by(email_hash=User.hash_email(email)).first()
+        if not user:
+            print("User not found.")
             sys.exit(1)
-        elif role == "admin" or role == "executive":
-            confirm = input("WARNING: This will create an admin/executive user. Are you sure? (y/n): ").strip().lower()
-            if confirm != "y":
-                print("User creation cancelled.")
-                sys.exit(1)
-                
-        email = input("Email: ").strip().lower()
-        if User.query.filter_by(email_hash=User.hash_email(email)).first():
-            print("Error: This email is already registered. Cancelling user creation.")
-            sys.exit(1)
-        
-        first_name = input("First name: ").strip()
-        last_name = input("Last name: ").strip()
-
         # loop password creation until valid password is entered
         while True:
             password = getpass.getpass("Password must:\n" + 
@@ -56,8 +46,8 @@ def main():
                                        "- contain at least one uppercase letter\n" +
                                        "- contain at least one number\n" +
                                        "- contain at least one symbol.\n" +
-                                       "Enter password: ")
-            password2 = getpass.getpass("Confirm password: ")
+                                       "Enter new password: ")
+            password2 = getpass.getpass("Confirm new password: ")
             if password != password2:
                 print("Passwords do not match. Please try again.")
                 continue
@@ -67,21 +57,8 @@ def main():
                 continue
             break
 
-        user = User(
-            first_name=first_name,
-            last_name=last_name,
-            role=role
-        )
-        # uses fernet encrpytion + SHA-256 hashing on email
-        # uses scrypt hashing on password
-        user.set_email(email)
+        # set password and commit to db
         user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-        print(f"User {email} created successfully.")
 
         # log this event
-        log_auth_event()
-
-if __name__ == "__main__":
-    main()
+        log_auth_event("admin_password_change", details=f"Admin script has reset the password for user email hash: {user}")
