@@ -8,7 +8,7 @@
 
 from app import db
 from app.models import AuthEvent
-from flask import request
+from flask import request, has_request_context
 from datetime import datetime, timezone
 import os, logging
 import time
@@ -29,11 +29,15 @@ if not auth_logger.handlers:
 
 
 # log auth event to db and to file
-def log_auth_event(event_type, user_id=None, details=None): # set None as default default for optional parameters
+def log_auth_event(event_type, user_id=None, details=None):
     try:
-        ip = request.remote_addr if request else None
-        user_agent = request.user_agent.string if request.user_agent.string else None
-        print("User-Agent string:", user_agent)
+        if has_request_context():
+            ip = request.remote_addr
+            user_agent = request.user_agent.string if request.user_agent.string else None
+        else:
+            ip = None
+            user_agent = None
+
         event = AuthEvent(
             event_type=event_type,
             user_id=user_id,
@@ -52,7 +56,14 @@ def log_auth_event(event_type, user_id=None, details=None): # set None as defaul
 
     except Exception as e:
         # do not crash app if log fails
-        from flask import current_app
-        current_app.logger.error(f"Failed to log auth event: {e}")
+        try:
+            from flask import current_app
+            if has_request_context():
+                current_app.logger.error(f"Failed to log auth event: {e}")
+            else:
+                auth_logger.error(f"Failed to log auth event. No request context: {e}")
+        except Exception:
+            # if loggers don't work
+            print(f"Logger was not able to handle exception. Failed to log auth event: {e}")
 
 

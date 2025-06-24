@@ -6,9 +6,11 @@ from app.auth.auth_logging import log_auth_event
 
 # This script is used to create multiple users at once. It will skip duplicates and enforce password requirements.
 
+# run script as module: python -m scripts.<script_name> (without .py extension)
+
 # Add the project root directory to Python path
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, project_root)
+# project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# sys.path.insert(0, project_root)
 
 from app import create_app, db
 from app.models.User import User

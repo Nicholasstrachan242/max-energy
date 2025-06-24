@@ -8,9 +8,11 @@ from app.auth.auth_logging import log_auth_event
 # A secure password must be created here. Please share the new password with the user in a secure manner.
 # The user will then have the ability to log into their account and change their own password through the site UI.
 
+# run script as module: python -m scripts.<script_name> (without .py extension)
+
 # Add the project root directory to Python path
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, project_root)
+# project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# sys.path.insert(0, project_root)
 
 from app import create_app, db
 from app.models.User import User
@@ -59,6 +61,11 @@ def main():
 
         # set password and commit to db
         user.set_password(password)
+        db.session.commit()
+        print("User password has been changed successfully.")
 
         # log this event
         log_auth_event("admin_password_change", details=f"Admin script has reset the password for user email hash: {user}")
+
+if __name__ == "__main__":
+    main()
