@@ -28,8 +28,15 @@ def main():
             sys.exit(0)
         user.is_active_flag = False
         db.session.commit()
-        log_auth_event("user_deactivated", user_id=user.id)
+        
         print(f"User {user.get_email()} has been deactivated.")
+
+        # log the event
+        try:
+            log_auth_event("user_deactivated", user_id=user.id)
+        except Exception as e:
+            print(f"Failed to log auth event: {e}")
+        
 
 if __name__ == "__main__":
     main()

@@ -62,10 +62,15 @@ def main():
         # set password and commit to db
         user.set_password(password)
         db.session.commit()
-        print("User password has been changed successfully.")
 
-        # log this event
-        log_auth_event("admin_password_change", details=f"Admin script has reset the password for user email hash: {user}")
+        print("User password has been changed successfully.")
+        # log the event
+        try:
+            
+            log_auth_event("admin_password_change", details=f"Admin script has reset the password for user email hash: {user}")
+        except Exception as e:
+            print(f"Failed to log auth event: {e}")
+
 
 if __name__ == "__main__":
     main()

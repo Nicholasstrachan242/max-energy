@@ -20,15 +20,21 @@ def main():
         if user.is_active_flag:
             print("User is already active.")
             sys.exit(0)
-        # confirm activation
+        # confirm activation and log event
         confirm = input(f"Are you sure you want to reactivate {user.get_email()}? (y/n): ")
         if confirm.lower() != 'y':
             print("Action cancelled.")
             sys.exit(0)
         user.is_active_flag = True
         db.session.commit()
-        log_auth_event("user_reactivated", user_id=user.id)
+
         print(f"User {user.get_email()} has been reactivated.")
+        
+        try:
+            # log the event
+            log_auth_event("user_reactivated", user_id=user.id)
+        except Exception as e:
+            print(f"Failed to log auth event: {e}")
 
 if __name__ == "__main__":
     main()

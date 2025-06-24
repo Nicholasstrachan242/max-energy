@@ -53,6 +53,7 @@ def is_strong_password(password):
 def main():
     app = create_app()
     with app.app_context():
+        valid_users = 0  # Counter for successfully created users
         for entry in USERS_TO_CREATE:
             # Make sure all required fields are present. Otherwise, skip the entry.
             required_fields = ["first_name", "last_name", "email", "password", "role"]
@@ -89,17 +90,19 @@ def main():
             user.set_password(password)
             db.session.add(user)
             print(f"User {email} ready to be added to db.")
+            valid_users += 1  # Increment counter for each valid user
 
         try:
             db.session.commit()
-            print("All valid users have been created successfully.")
+
+            print(f"All valid users have been created successfully. Total created: {valid_users}")
+            # log the event
+            log_auth_event("users_created", details=f"{valid_users} user(s) created via multiple create script.")
+            
         except Exception as e:
             db.session.rollback()
             print(f"Error adding users to database: {e}")
             sys.exit(1)
     
-    # log this event
-    log_auth_event()
-
 if __name__ == "__main__":
     main()

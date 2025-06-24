@@ -80,10 +80,14 @@ def main():
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
+    
         print(f"User {email} created successfully.")
+        # log the event
+        try:
+            log_auth_event("user_created", details="1 user created.")
+        except Exception as e:
+            print(f"Failed to log auth event: {e}")
 
-        # log this event
-        log_auth_event()
 
 if __name__ == "__main__":
     main()

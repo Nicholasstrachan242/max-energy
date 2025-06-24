@@ -43,7 +43,7 @@ def init_login_manager(app):
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 # log in user
 @auth_bp.route('/login', methods=['GET', 'POST'])
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 def login():
     try:
         next_page = request.args.get('next')
