@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Re-Authentication - User Management</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #2D2D2D 0%, #FBB019 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .auth-container {
+            background: #fff;
+            padding: 2.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 0 24px #FBB01955;
+            text-align: center;
+            min-width: 340px;
+        }
+        h2 {
+            color: #496DA7;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+        label {
+            color: #2D2D2D;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #496DA7;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .submit-btn {
+            background: #496DA7;
+            color: #fff;
+            padding: 0.7rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: background 0.2s, color 0.2s;
+        }
+        .submit-btn:hover {
+            background: #FBB019;
+            color: #fff;
+        }
+        .error-message {
+            color: #ff4d4d;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Admin Re-Authentication</h2>
+        <form method="POST" action="{{ url_for('user_management_auth') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label for="username">Admin Username</label>
+                <input type="text" id="username" name="username" required placeholder="Enter admin username">
+            </div>
+            <div class="form-group">
+                <label for="password">Admin Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter admin password">
+            </div>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="error-message">{{ messages[0] }}</div>
+            {% endif %}
+            {% endwith %}
+            <button type="submit" class="submit-btn">Authenticate</button>
+        </form>
+    </div>
+</body>
+</html> 

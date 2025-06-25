@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - MAXX ENERGY</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("{{ url_for('static', filename='b14c8129-fd8f-4f1e-a50d-23102aafbfe9.png') }}");
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        .dashboard-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .welcome-message {
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .logout-button {
+            padding: 0.8rem 1.5rem;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background: #c82333;
+        }
+
+        .dashboard-content {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body
+    {% if session['role'] == 'admin' %}style="background: linear-gradient(135deg, #2D2D2D 0%, #FBB019 100%);"
+    {% elif session['role'] == 'executive' %}style="background: linear-gradient(135deg, #496DA7 0%, #FBB019 100%);"
+    {% elif session['role'] == 'manager' %}style="background: linear-gradient(135deg, #496DA7 0%, #00ffaa 100%);"
+    {% elif session['role'] == 'staff' %}style="background: linear-gradient(135deg, #496DA7 0%, #a0aec0 100%);"
+    {% elif session['role'] == 'guest' %}style="background: linear-gradient(135deg, #bfcbe3 0%, #496DA7 100%);"
+    {% endif %}
+>
+    <nav style="display: flex; justify-content: flex-end; gap: 1.5rem; padding: 1rem 2rem; background: #496DA7; color: #fff;">
+        {% if session['role'] == 'admin' %}
+            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="{{ url_for('role_management') }}" style="color:#fff;">Role Management</a>
+            <a href="{{ url_for('assign_permissions_admin') }}" style="color:#fff;">Assign Permissions</a>
+            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+        {% elif session['role'] == 'executive' %}
+            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="#" style="color:#fff;">Executive Reports</a>
+            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+        {% elif session['role'] == 'manager' %}
+            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="#" style="color:#fff;">Manage Team</a>
+            <a href="#" style="color:#fff;">View Reports</a>
+            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+        {% elif session['role'] == 'staff' %}
+            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="#" style="color:#fff;">My Tasks</a>
+            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+        {% elif session['role'] == 'guest' %}
+            <a href="{{ url_for('home') }}" style="color:#fff;">Home</a>
+            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+        {% else %}
+            <a href="{{ url_for('login') }}" style="color:#fff;">Login</a>
+        {% endif %}
+    </nav>
+    <div class="dashboard-container">
+        <h1>Welcome, {{ session['username'] }}!</h1>
+        <p>This is your dashboard.</p>
+        {% if session['role'] == 'admin' %}
+            <a href="{{ url_for('user_management_auth') }}" class="btn btn-primary" style="margin-bottom:1.5rem;display:inline-block;">User Management</a>
+        {% endif %}
+        <div style="margin-top:2rem;">
+            {% if 'manage_users' in user_permissions %}
+                <a href="{{ url_for('role_management') }}" class="btn btn-primary">User & Role Management</a><br><br>
+            {% endif %}
+            {% if 'manage_permissions' in user_permissions %}
+                <a href="{{ url_for('assign_permissions_admin') }}" class="btn btn-primary">Assign Permissions</a><br><br>
+            {% endif %}
+            {% if 'manage_team' in user_permissions %}
+                <a href="#" class="btn btn-primary">Manage Team</a><br><br>
+            {% endif %}
+            {% if 'view_reports' in user_permissions %}
+                <a href="#" class="btn btn-primary">View Reports</a><br><br>
+            {% endif %}
+            {% if 'edit_content' in user_permissions %}
+                <a href="#" class="btn btn-primary">Edit Content</a><br><br>
+            {% endif %}
+            {% if 'view_content' in user_permissions %}
+                <a href="#" class="btn btn-primary">View Content</a><br><br>
+            {% endif %}
+            {% if user_permissions|length == 0 %}
+                <p style="color:#888;">You have no special permissions. Please contact your administrator for access.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

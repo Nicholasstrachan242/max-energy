@@ -1,0 +1,23 @@
+| Role Name            | Description                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------------- |
+| **Admin**            | Full access to the system. Manages users, roles, and system settings.                           |
+| **Executive**        | High-level access to key solar performance metrics and dashboards.                              |
+| **Engineer**         | Technical staff who monitor and troubleshoot plant performance.                                 |
+| **Analyst**          | Data professionals who analyze trends, usage, and performance data.                             |
+| **Field Technician** | On-site workers who may need read-only access to specific plant data.                           |
+| **Client**           | External stakeholders or customers with limited, view-only access to relevant solar plant data. |
+
+
+PERMISSIONS TO CONSIDER
+| Permission                       | Admin | Executive | Engineer | Analyst | Technician | Client |
+| -------------------------------- | :---: | :-------: | :------: | :-----: | :--------: | :----: |
+| View solar plant dashboards      |   ✅   |     ✅     |     ✅    |    ✅    |      ✅     |    ✅   |
+| View raw sensor data             |   ✅   |     ✅     |     ✅    |    ✅    |      ✅     |   🚫   |
+| Download data (CSV, Excel, etc.) |   ✅   |     ✅     |     ✅    |    ✅    |     🚫     |   🚫   |
+| Manage users and roles           |   ✅   |     🚫    |    🚫    |    🚫   |     🚫     |   🚫   |
+| Modify system settings           |   ✅   |     🚫    |    🚫    |    🚫   |     🚫     |   🚫   |
+| Add or edit solar plant metadata |   ✅   |     🚫    |     ✅    |    🚫   |     🚫     |   🚫   |
+| Create reports / dashboards      |   ✅   |     ✅     |    🚫    |    ✅    |     🚫     |   🚫   |
+| Annotate or comment on data      |   ✅   |     ✅     |     ✅    |    ✅    |      ✅     |   🚫   |
+
+

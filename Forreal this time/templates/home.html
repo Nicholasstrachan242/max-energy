@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - MAXX ENERGY</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #bfcbe3 0%, #496DA7 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .home-container {
+            background: rgba(255,255,255,0.95);
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            box-shadow: 0 0 20px #496DA744;
+            text-align: center;
+        }
+        .home-title {
+            font-size: 2.5rem;
+            color: #496DA7;
+            margin-bottom: 1rem;
+            font-weight: 900;
+        }
+        .home-desc {
+            color: #2D2D2D;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        .login-link {
+            color: #FBB019;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+        .login-link:hover {
+            color: #496DA7;
+        }
+    </style>
+</head>
+<body>
+    <div class="home-container">
+        <div class="home-title">Welcome to MAXX ENERGY</div>
+        <div class="home-desc">You are currently logged in as a guest. Your access is limited. Please contact an administrator for more access or <a href="{{ url_for('login') }}" class="login-link">log in</a> with a different account.</div>
+    </div>
+</body>
+</html> 

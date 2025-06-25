@@ -1,0 +1,33 @@
+{% extends 'dashboard.html' %}
+{% block content %}
+<div class="container" style="max-width: 600px; margin: 2rem auto; background: #fff; border-radius: 10px; box-shadow: 0 0 20px #496DA744; padding: 2rem;">
+    <h2 style="text-align:center; color:#496DA7;">Assign Permissions to Roles</h2>
+    <form method="POST" action="{{ url_for('assign_permissions_admin') }}">
+        <div class="form-group">
+            <label for="role_id" style="font-weight:bold;">Select Role:</label>
+            <select name="role_id" id="role_id" class="form-control" required onchange="this.form.submit()">
+                <option value="">-- Select Role --</option>
+                {% for role in roles %}
+                    <option value="{{ role.id }}" {% if request.form.role_id|int == role.id %}selected{% endif %}>{{ role.name|capitalize }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% if request.method == 'POST' or request.form.role_id %}
+        <div class="form-group" style="margin-top:1.5rem;">
+            <label style="font-weight:bold;">Permissions:</label>
+            <div style="display:flex; flex-wrap:wrap; gap:1rem;">
+                {% set selected_role = roles|selectattr('id', 'equalto', request.form.role_id|int)|first %}
+                {% for perm in permissions %}
+                    <div>
+                        <input type="checkbox" name="permissions" value="{{ perm.id }}" id="perm{{ perm.id }}"
+                        {% if perm in selected_role.permissions %}checked{% endif %}>
+                        <label for="perm{{ perm.id }}">{{ perm.name|replace('_', ' ')|capitalize }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <button type="submit" class="login-button" style="margin-top:1.5rem;">Update Permissions</button>
+        {% endif %}
+    </form>
+</div>
+{% endblock %} 

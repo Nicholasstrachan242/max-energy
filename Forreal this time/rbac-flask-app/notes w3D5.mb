@@ -1,0 +1,93 @@
+# MAXX ENERGY RBAC System – Session Summary (W3D5)
+
+## 1. Features & Functionality Added/Updated
+
+- **User Management Button:**
+  - Added a prominent orange "User Management" button for admins on the role management page.
+
+- **Custom Password Reset:**
+  - Admins can reset any user's password (except the admin account) via a secure form.
+  - Minimum password length for reset is now **13 characters**.
+  - The reset form and validation messages have been updated accordingly.
+
+- **CSRF Protection Fixes:**
+  - All forms (including login, admin re-auth, and password reset) now include a hidden CSRF token input, ensuring Flask-WTF protection works correctly.
+  - Fixed issues where CSRF tokens were missing or not in the correct format.
+
+- **Audit Logging:**
+  - Added an `AuditLog` model to the database.
+  - Logs all key admin actions:  
+    - Admin authentication for user management  
+    - User creation, deletion, password reset, status changes  
+    - Role creation, editing, deletion
+  - Recent audit logs are displayed at the bottom of the user management and role management pages.
+
+- **Admin Dashboard Button:**
+  - Added a "Dashboard" button for admins at the top of the user management page for easy rerouting.
+
+---
+
+## 2. Database Changes
+
+- **New Table:**
+  - `AuditLog` table tracks admin actions with fields:  
+    - `id`, `admin_username`, `action`, `target`, `details`, `timestamp`
+- **User, Role, and Permission Models:**
+  - No structural changes today, but seeded users/roles/permissions remain as before.
+
+---
+
+## 3. Login & Key Information
+
+- **Default Admin Credentials:**
+  - **Username:** `admin`  
+  - **Password:** `password`  
+  - (Change this password in production for security!)
+
+- **Admin Re-Authentication:**
+  - To access user management, admins must re-authenticate using the above credentials.
+
+- **CSRF Protection:**
+  - All forms require a valid CSRF token.  
+  - If you restart the server, use a fixed `SECRET_KEY` in development to avoid invalidating tokens.
+
+- **Password Policy:**
+  - When resetting a user's password, the new password must be at least **13 characters**.
+
+---
+
+## 4. Security & Best Practices
+
+- **CSRF tokens** are now correctly included in all forms.
+- **Audit logs** provide traceability for all admin actions.
+- **Session management** and admin-only access are enforced for sensitive routes.
+- **Do not use the default admin password in production.** Change it immediately after setup.
+
+---
+
+## 5. How to Use
+
+- **To log in as admin:**
+  - Go to `/login`  
+  - Use username: `admin`, password: `password`
+- **To access user management:**
+  - Click "User Management" on the role management page, then re-authenticate as admin.
+- **To reset a user's password:**
+  - Click "Reset Password" next to a user, enter a new password (min 13 chars).
+- **To view audit logs:**
+  - Scroll to the bottom of the user management or role management page.
+
+---
+
+## 6. Key Files Modified Today
+
+- `app.py` (backend logic, password policy, audit logging)
+- `db.py` (added `AuditLog` model)
+- `templates/role_management.html` (user management button, audit logs)
+- `templates/user_management.html` (dashboard button, audit logs)
+- `templates/user_management_auth.html` (CSRF fix)
+- `templates/reset_user_password.html` (CSRF fix, min length update)
+
+---
+
+**If you need a more detailed technical changelog, or want this in a markdown file for your repo, just let me know!** 
