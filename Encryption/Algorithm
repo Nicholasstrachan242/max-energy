@@ -1,8 +1,0 @@
-"""
-Authorization using RBAC (Role Based Access Control)
-Database tables required:
-- roles: Stores role definitions
-- permissions: Stores permission definitions  
-- role_permission: Maps roles to permissions
-- user_role: Maps users to roles
-"""
