@@ -23,3 +23,6 @@ logs/*.log
 
 #instance files
 /instance/
+
+# dev environment settings
+.vscode/
