@@ -43,6 +43,7 @@ class User(UserMixin, db.Model):
     date_created = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     last_login = db.Column(db.DateTime, nullable=True)
     is_active_flag = db.Column(db.Boolean, nullable=False, default=True) # accounts are set as active by default.
+    employee_id = db.Column(db.Integer, nullable=True, autoincrement=True) # employee_id imported from csv. Needs to be unique, but allow null for guests.
 
    
     # hash email function is static because it does not need to be tied to a specific user instance.
@@ -62,6 +63,12 @@ class User(UserMixin, db.Model):
 
     def get_email(self):
         return get_fernet().decrypt(self.email_encrypted).decode()
+    
+    def set_role(self, role):
+        self.role = role.strip().lower()
+
+    def get_role(self):
+        return self.role
         
     def set_password(self, password):
         self.password_hash = generate_password_hash(password, method='scrypt', salt_length=16)
@@ -70,6 +77,8 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
     
     def is_authenticated(self):
+        # flask-login has this as True by default for logged in users,
+        # but any add'l logic can go here to define the baseline for what is considered authenticated
         return True
 
     def is_active(self):

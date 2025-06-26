@@ -33,9 +33,9 @@ def main():
     with app.app_context():
         print("=== Maxx Energy Admin: Add User ===")
         # role selection. Limited to admin, executive, manager, employee, guest
-        role = input("Role: [ manager | employee | guest ] ").strip().lower()
+        role = input("Role: [ guest | employee | manager ] ").strip().lower()
         if role not in ["manager", "employee", "guest", "admin", "executive"]:
-            print("Invalid role. Please choose from: manager, employee, guest.")
+            print("Invalid role. Please choose an option from: [ guest | employee | manager ]")
             sys.exit(1)
         elif role == "admin" or role == "executive":
             confirm = input("WARNING: This will create an admin/executive user. Are you sure? (y/n): ").strip().lower()
@@ -72,12 +72,12 @@ def main():
         user = User(
             first_name=first_name,
             last_name=last_name,
-            role=role
         )
         # uses fernet encrpytion + SHA-256 hashing on email
         # uses scrypt hashing on password
         user.set_email(email)
         user.set_password(password)
+        user.set_role(role)
         db.session.add(user)
         db.session.commit()
     
