@@ -41,10 +41,12 @@ def run_windows_server(app):
 def run_linux_server(app):
     if app.config['TESTING']:
         print("Gunicorn is not meant to be run from file. For development, please run from command line:\n" + 
-              "flask run --host=*ip-here* --port=*port-here*" )
+              "flask run \n" +
+               "Or, if development but allowing access to the rest of the network:\n"+
+                "flask run --host:0.0.0.0 --port=8080" )
     else:
         print("Gunicorn is not meant to be run from file. For production, please run from command line:" + "\n" + 
-              "gunicorn --bind *ip-here*:*port-here* wsgi:app")
+              "gunicorn --bind 0.0.0.0:8000 wsgi:app --workers=4")
         sys.exit(1)
 
 # run the server
