@@ -100,7 +100,7 @@ def create_app(test_config=None):
         limiter.init_app(app)
     else:
         redis_url = os.getenv('RATE_LIMIT_REDIS_URL', 'redis://localhost:6379/0')
-        limiter.init_app(app, storage_uri=redis_url)
+        # limiter.init_app(app, storage_uri=redis_url)
 
     # check for instance folder
     try:
