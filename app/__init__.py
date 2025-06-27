@@ -81,6 +81,9 @@ def create_app(test_config=None):
     if test_config:
         config.update(test_config)
 
+    # check uri for testing
+    print("SQLALCHEMY_DATABASE_URI:", config['SQLALCHEMY_DATABASE_URI'])
+
     # pass in config
     app.config.from_mapping(config)
 
