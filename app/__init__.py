@@ -11,7 +11,15 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
 # Load environment variables
-load_dotenv()
+# load .env.test for testing, .env for production
+app_env = os.getenv('APP_ENV', 'production').lower()
+if app_env in ['test', 'testing']:
+    load_dotenv('.env.test')
+else:
+    load_dotenv('.env')
+
+print("loaded .env file for APP_ENV:",app_env)
+print("DB_PORT:", os.getenv("DB_PORT"))
 
 # initialize SQLAlchemy and Migrate
 class Base(DeclarativeBase): pass
@@ -27,15 +35,7 @@ limiter = Limiter(get_remote_address)
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
-    # TODO setup logging to file
-    #if not os.path.exists('logs'):
-    #    os.mkdir('logs')
-    #file_handler = TimedRotatingFileHandler('logs/app.log', maxBytes=9000, backupCount=5)
-    #file_handler.setFormatter(logging.Formatter())
-
-
     # determine if testing.
-    # TESTING FLAG IS IN .env
     env = os.getenv('APP_ENV', 'production').lower()
     is_testing = env in ['test', 'testing']
 
@@ -69,11 +69,6 @@ def create_app(test_config=None):
     if is_testing: 
         config.update({
             'TESTING': True,
-            'SECRET_KEY': os.getenv('TEST_SECRET_KEY'),
-            'SQLALCHEMY_DATABASE_URI': (
-                f"mysql+pymysql://{os.getenv('TEST_DB_USER')}:{os.getenv('TEST_DB_PASS')}"
-                f"@{os.getenv('TEST_DB_HOST')}:{os.getenv('TEST_DB_PORT')}/{os.getenv('TEST_DB_NAME')}"
-            ),
             'SQLALCHEMY_TRACK_MODIFICATIONS': False,
             'WTF_CSRF_ENABLED': False # disable CSRF protection for testing
         })
