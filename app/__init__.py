@@ -1,4 +1,4 @@
-import os, logging
+import os, logging, platform
 from logging.handlers import TimedRotatingFileHandler
 from flask import Flask, jsonify, request, redirect
 from dotenv import load_dotenv
@@ -29,8 +29,11 @@ migrate = Migrate()
 # initialize CSRFProtect
 csrf = CSRFProtect()
 
-# initialize Limiter
-limiter = Limiter(get_remote_address)
+# Limiter constructor
+limiter = Limiter(
+    get_remote_address,
+    default_limits=["200 per day", "50 per hour"]
+)
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -90,16 +93,14 @@ def create_app(test_config=None):
     init_login_manager(app)
 
     # Flask-Limiter setup
-    # Use w/ redis for production (linux) and as-is in-memory for testing (windows)
+    # Use w/ redis for production (linux) and as-is in-memory for testing and windows production
     if is_testing:
+        limiter.init_app(app)
+    elif platform.system().lower() == "windows":
         limiter.init_app(app)
     else:
         redis_url = os.getenv('RATE_LIMIT_REDIS_URL', 'redis://localhost:6379/0')
-        limiter.init_app(
-            app,
-            storage_uri=redis_url,
-            default_limits=["200 per day", "50 per hour"]
-        )
+        limiter.init_app(app, storage_uri=redis_url)
 
     # check for instance folder
     try:
