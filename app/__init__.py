@@ -18,8 +18,9 @@ if app_env in ['test', 'testing']:
 else:
     load_dotenv('.env')
 
-print("loaded .env file for APP_ENV:",app_env)
-print("DB_PORT:", os.getenv("DB_PORT"))
+# show which .env file loaded
+print("loaded environment: ",app_env)
+
 
 # initialize SQLAlchemy and Migrate
 class Base(DeclarativeBase): pass
