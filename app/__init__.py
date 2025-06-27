@@ -12,14 +12,18 @@ from flask_limiter.util import get_remote_address
 
 # Load environment variables
 # load .env.test for testing, .env for production
+
 app_env = os.getenv('APP_ENV', 'production').lower()
 if app_env in ['test', 'testing']:
-    load_dotenv('.env.test')
+    # enable override here to ensure .env.test gets loaded
+    load_dotenv('.env.test', override=True)
 else:
-    load_dotenv('.env')
+    load_dotenv('.env.prod')
 
 # show which .env file loaded
 print("loaded environment: ",app_env)
+print("Loaded DB_USER:", os.getenv("DB_USER"))
+print("Loaded DB_NAME:", os.getenv("DB_NAME"))
 
 
 # initialize SQLAlchemy and Migrate

@@ -16,8 +16,10 @@ venv/
 
 # environment variables
 .env
-.env.test
 **/.env
+.env.prod
+**/.env.prod
+.env.test
 **/.env.test
 
 # log files (but keep folder to maintain structure)
