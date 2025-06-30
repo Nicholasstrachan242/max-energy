@@ -15,7 +15,8 @@ import csv, os
 
 
 # make sure this script is running with the correct .env variables to match the environment
-app_env = os.getenv('APP_ENV', 'prod').lower()
+# this check is modified from app factory check, because here TESTING is desired as priority and default.
+app_env = os.getenv('APP_ENV', 'test').lower()
 if app_env in ['test', 'testing']:
     load_dotenv('.env.test', override=True)
 else:
