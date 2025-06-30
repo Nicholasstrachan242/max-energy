@@ -34,10 +34,14 @@ migrate = Migrate()
 # initialize CSRFProtect
 csrf = CSRFProtect()
 
+# determine what storage is used for rate limiting. 
+# default to in-memory for Windows and testing. For production linux, use redis server.
+storage_uri = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
 # Limiter constructor
 limiter = Limiter(
     get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri=storage_uri
 )
 
 def create_app(test_config=None):
@@ -100,15 +104,8 @@ def create_app(test_config=None):
     from app.auth.auth import init_login_manager
     init_login_manager(app)
 
-    # Flask-Limiter setup
-    # Use w/ redis for production (linux) and as-is in-memory for testing and windows production
-    if is_testing:
-        limiter.init_app(app)
-    elif platform.system().lower() == "windows":
-        limiter.init_app(app)
-    else:
-        redis_url = os.getenv('RATE_LIMIT_REDIS_URL', 'redis://localhost:6379/0')
-        # limiter.init_app(app, storage_uri=redis_url)
+    # initialize flask-limiter
+    limiter.init_app(app)
 
     # check for instance folder
     try:
