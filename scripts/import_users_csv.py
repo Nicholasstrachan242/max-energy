@@ -1,6 +1,7 @@
 from app import create_app, db
 from app.models.User import User
-import csv
+from dotenv import load_dotenv
+import csv, os
 
 # WARNING: FOR INTERNAL ADMIN USE ONLY. Do not run or edit this script without prior authorization.
 
@@ -11,6 +12,15 @@ import csv
 # script does not allow partial data to be committed to db. ALL or NONE only.
 
 # run script as module: python -m scripts.<script_name> (without .py extension)
+
+
+# make sure this script is running with the correct .env variables to match the environment
+app_env = os.getenv('APP_ENV', 'prod').lower()
+if app_env in ['test', 'testing']:
+    load_dotenv('.env.test', override=True)
+else:
+    load_dotenv('.env.prod', override=True)
+
 
 # split name into first and last
 def split_name(full_name):

@@ -13,7 +13,7 @@ from flask_limiter.util import get_remote_address
 # Load environment variables
 # load .env.test for testing, .env for production
 
-app_env = os.getenv('APP_ENV', 'production').lower()
+app_env = os.getenv('APP_ENV', 'prod').lower()
 if app_env in ['test', 'testing']:
     # enable override here to ensure .env.test gets loaded
     load_dotenv('.env.test', override=True)
