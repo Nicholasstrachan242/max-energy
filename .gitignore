@@ -15,12 +15,10 @@ venv/
 **/venv/    
 
 # environment variables
-.env
 **/.env
-.env.prod
 **/.env.prod
-.env.test
 **/.env.test
+**/.env.systemd
 
 # log files (but keep folder to maintain structure)
 logs/*.log
