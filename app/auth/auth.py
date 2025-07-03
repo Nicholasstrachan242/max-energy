@@ -43,7 +43,14 @@ def init_login_manager(app):
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 # log in user
 @auth_bp.route('/login', methods=['GET', 'POST'])
-@limiter.limit("10 per minute")
+# login rate limiting
+# by default, this limits by IP address
+# 10 attempts per 60 second window. After exceeding, the user has to wait until 60s AFTER the first attempt
+@limiter.limit("10 per minute",
+               deduct_when=lambda response: (
+                   # only count failed, submitted login attempts towards this limit
+                   request.method == 'POST' and response.status_code == 200
+               ))
 def login():
     try:
         next_page = request.args.get('next')
