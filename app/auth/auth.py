@@ -1,4 +1,4 @@
-import functools, logging
+import functools, logging, os
 from flask import Blueprint, redirect, render_template, request, url_for, abort, flash
 from jinja2 import TemplateNotFound
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -117,7 +117,19 @@ def change_password():
 
 
 # prevent attacks that redirect to external sites
+# relative-only urls, no absolute urls. stricter approach used here
+# prevent path traversal
 def is_safe_url(target):
-    ref_url = urlparse(request.host_url)
+    # remove backslashes to prevent browser quirks
+    target = target.replace('\\', '')
+    # resolve target relative to the host URL
     test_url = urlparse(urljoin(request.host_url, target))
-    return test_url.scheme in ('http', 'https') and ref_url.netloc == test_url.netloc
+    normalized_path = os.path.normpath(test_url.path)
+    # only allow relative URLs (no netloc, must start with '/')
+    return (
+        test_url.scheme in ('http', 'https') and
+        not test_url.netloc and
+        normalized_path.startswith('/') and
+        not normalized_path.startswith('/..') and
+        '/../' not in normalized_path
+    )
