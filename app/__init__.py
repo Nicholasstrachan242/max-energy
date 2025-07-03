@@ -81,8 +81,10 @@ def create_app(test_config=None):
     if is_testing: 
         config.update({
             'TESTING': True,
+            'SESSION_COOKIE_SECURE': False, # allow http in test
+            'REMEMBER_COOKIE_SECURE': False, # allow http in test
             'SQLALCHEMY_TRACK_MODIFICATIONS': False,
-            'WTF_CSRF_ENABLED': False # disable CSRF protection for testing
+            'WTF_CSRF_ENABLED': True # since test site is no longer local-only, keep csrf protection on
         })
 
     # allow test config to override default config

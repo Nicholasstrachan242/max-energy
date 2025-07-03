@@ -117,7 +117,7 @@ def change_password():
 
 
 # prevent attacks that redirect to external sites
-# relative-only urls, no absolute urls. stricter approach used here
+# only allow relative-only urls on same domain, no absolute urls. Stricter approach used here
 # prevent path traversal
 def is_safe_url(target):
     # remove backslashes to prevent browser quirks
@@ -125,11 +125,11 @@ def is_safe_url(target):
     # resolve target relative to the host URL
     test_url = urlparse(urljoin(request.host_url, target))
     normalized_path = os.path.normpath(test_url.path)
-    # only allow relative URLs (no netloc, must start with '/')
     return (
         test_url.scheme in ('http', 'https') and
         not test_url.netloc and
         normalized_path.startswith('/') and
+        # prevent traversal and escaping
         not normalized_path.startswith('/..') and
         '/../' not in normalized_path
     )
