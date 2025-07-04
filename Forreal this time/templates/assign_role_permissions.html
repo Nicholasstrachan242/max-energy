@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Role Permissions - Maxx Energy</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #496DA7 0%, #FBB019 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 2rem;
+        }
+        .container {
+            background: #fff;
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 12px;
+            box-shadow: 0 0 24px #496DA744;
+            padding: 2.5rem 2rem;
+        }
+        h1 {
+            color: #496DA7;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .role-info {
+            background: #f5f7fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #FBB019;
+        }
+        .role-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #496DA7;
+            margin-bottom: 0.5rem;
+        }
+        .role-description {
+            color: #666;
+            font-style: italic;
+        }
+        .permissions-section {
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            color: #496DA7;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .permission-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .permission-item:hover {
+            background: #e9ecef;
+            border-color: #FBB019;
+        }
+        .permission-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #FBB019;
+        }
+        .permission-name {
+            font-weight: bold;
+            color: #496DA7;
+        }
+        .permission-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #496DA7;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #3a5a8a;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: #fff;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-success {
+            background: #FBB019;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #d89200;
+        }
+        .current-permissions {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        .flash-messages {
+            margin-bottom: 1rem;
+        }
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Assign Role Permissions</h1>
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+            <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="role-info">
+            <div class="role-name">{{ role.name|title }}</div>
+            <div class="role-description">{{ role.description }}</div>
+        </div>
+
+        {% if role.permissions %}
+        <div class="current-permissions">
+            <strong>Current Permissions:</strong> {{ role.permissions|map(attribute='name')|join(', ') }}
+        </div>
+        {% endif %}
+
+        <form method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
+            <div class="permissions-section">
+                <h2 class="section-title">Maxx Energy Permissions</h2>
+                <p>Select the permissions you want to assign to this role:</p>
+                
+                <div class="permissions-grid">
+                    {% for permission in permissions %}
+                    <div class="permission-item">
+                        <input type="checkbox" 
+                               id="perm_{{ permission.id }}" 
+                               name="permissions" 
+                               value="{{ permission.id }}"
+                               class="permission-checkbox"
+                               {% if permission in role.permissions %}checked{% endif %}>
+                        <div>
+                            <div class="permission-name">{{ permission.name|replace('_', ' ')|title }}</div>
+                            <div class="permission-description">{{ permission.description }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-success">Save Permissions</button>
+                <a href="{{ url_for('admin.role_management') }}" class="btn btn-secondary">Cancel</a>
+                <a href="{{ url_for('admin.permission_management') }}" class="btn btn-primary">Permission Management</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Add some interactivity
+        document.querySelectorAll('.permission-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.type !== 'checkbox') {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

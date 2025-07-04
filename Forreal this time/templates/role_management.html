@@ -237,14 +237,16 @@
 </head>
 <body>
     {% if session['role'] == 'admin' %}
-        <a href="{{ url_for('user_management_auth') }}" class="user-mgmt-btn">User Management</a>
+        <a href="{{ url_for('admin.user_management_auth') }}" class="user-mgmt-btn">User Management</a>
+        <a href="{{ url_for('admin.permission_management') }}" class="user-mgmt-btn" style="background: #496DA7; margin-left: 1rem;">Permission Management</a>
+        <a href="{{ url_for('admin.assign_permissions_admin') }}" class="user-mgmt-btn" style="background: #28a745; margin-left: 1rem;">Assign Permissions</a>
     {% endif %}
     <div class="container">
         <div class="header">
             <div class="welcome-message">
                 Role Management System
             </div>
-            <a href="{{ url_for('logout') }}" class="logout-button">Logout</a>
+            <a href="{{ url_for('auth.logout') }}" class="logout-button">Logout</a>
         </div>
 
         {% with messages = get_flashed_messages() %}
@@ -267,7 +269,7 @@
         <div id="users" class="tab-content active">
             <div class="management-section">
                 <h2 class="section-title">User Management</h2>
-                <form method="POST" action="{{ url_for('add_user') }}">
+                <form method="POST" action="{{ url_for('admin.add_user') }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-group">
                         <label for="username">Username</label>
@@ -318,7 +320,7 @@
         <div id="roles" class="tab-content">
             <div class="management-section">
                 <h2 class="section-title">Role Management</h2>
-                <form method="POST" action="{{ url_for('add_role') }}">
+                <form method="POST" action="{{ url_for('admin.add_role') }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-group">
                         <label for="role_name">Role Name</label>
@@ -347,6 +349,7 @@
                             <td>{{ role.description }}</td>
                             <td>{{ role.permissions|map(attribute='name')|join(', ') }}</td>
                             <td>
+                                <a href="{{ url_for('admin.assign_role_permissions', role_id=role.id) }}" class="action-button edit-button" style="text-decoration: none; display: inline-block;">Assign Permissions</a>
                                 {% if role.name != 'admin' %}
                                 <button class="action-button edit-button" onclick="showEditRoleModal('{{ role.id }}', '{{ role.name }}', '{{ role.description }}')">Edit</button>
                                 <button class="action-button delete-button" onclick="showDeleteRoleModal('{{ role.id }}', '{{ role.name }}')">Delete</button>
@@ -362,8 +365,8 @@
         <!-- Permissions Management Section -->
         <div id="permissions" class="tab-content">
             <div class="management-section">
-                <h2 class="section-title">Permission Management</h2>
-                <form method="POST" action="{{ url_for('add_permission') }}">
+                <h2 class="section-title">Maxx Energy Permission Management</h2>
+                <form method="POST" action="{{ url_for('admin.add_permission') }}">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-group">
                         <label for="permission_name">Permission Name</label>

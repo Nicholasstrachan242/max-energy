@@ -1,33 +1,407 @@
-{% extends 'dashboard.html' %}
-{% block content %}
-<div class="container" style="max-width: 600px; margin: 2rem auto; background: #fff; border-radius: 10px; box-shadow: 0 0 20px #496DA744; padding: 2rem;">
-    <h2 style="text-align:center; color:#496DA7;">Assign Permissions to Roles</h2>
-    <form method="POST" action="{{ url_for('assign_permissions_admin') }}">
-        <div class="form-group">
-            <label for="role_id" style="font-weight:bold;">Select Role:</label>
-            <select name="role_id" id="role_id" class="form-control" required onchange="this.form.submit()">
-                <option value="">-- Select Role --</option>
-                {% for role in roles %}
-                    <option value="{{ role.id }}" {% if request.form.role_id|int == role.id %}selected{% endif %}>{{ role.name|capitalize }}</option>
-                {% endfor %}
-            </select>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Permissions - Maxx Energy</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #496DA7 0%, #FBB019 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 2rem;
+        }
+        .container {
+            background: #fff;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 12px;
+            box-shadow: 0 0 24px #496DA744;
+            padding: 2.5rem 2rem;
+        }
+        h1 {
+            color: #496DA7;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.2s;
+            margin: 0 0.5rem;
+        }
+        .btn-primary {
+            background: #496DA7;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #3a5a8a;
+        }
+        .btn-success {
+            background: #FBB019;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #d89200;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: #fff;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            border-bottom-color: #496DA7;
+            color: #496DA7;
+            font-weight: bold;
+        }
+        .tab:hover {
+            background: #f8f9fa;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            color: #496DA7;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: bold;
+        }
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: #fff;
+        }
+        .permissions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .permission-item {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        .permission-item:hover {
+            background: #f8f9fa;
+            border-color: #FBB019;
+        }
+        .permission-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #FBB019;
+        }
+        .permission-name {
+            font-weight: bold;
+            color: #496DA7;
+        }
+        .permission-description {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+        .flash-messages {
+            margin-bottom: 1rem;
+        }
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .user-management-section {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            margin-top: 2rem;
+        }
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        .user-table th, .user-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .user-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #496DA7;
+        }
+        .user-table tr:hover {
+            background: #f8f9fa;
+        }
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        .current-permissions {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        .role-info {
+            background: #f5f7fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #FBB019;
+        }
+        .role-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #496DA7;
+            margin-bottom: 0.5rem;
+        }
+        .role-description {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Maxx Energy Permission Assignment</h1>
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+            <div class="flash-message">{{ message }}</div>
+            {% endfor %}
         </div>
-        {% if request.method == 'POST' or request.form.role_id %}
-        <div class="form-group" style="margin-top:1.5rem;">
-            <label style="font-weight:bold;">Permissions:</label>
-            <div style="display:flex; flex-wrap:wrap; gap:1rem;">
-                {% set selected_role = roles|selectattr('id', 'equalto', request.form.role_id|int)|first %}
-                {% for perm in permissions %}
-                    <div>
-                        <input type="checkbox" name="permissions" value="{{ perm.id }}" id="perm{{ perm.id }}"
-                        {% if perm in selected_role.permissions %}checked{% endif %}>
-                        <label for="perm{{ perm.id }}">{{ perm.name|replace('_', ' ')|capitalize }}</label>
-                    </div>
-                {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="header-actions">
+            <div>
+                <a href="{{ url_for('admin.role_management') }}" class="btn btn-secondary">Role Management</a>
+                <a href="{{ url_for('admin.user_management') }}" class="btn btn-secondary">User Management</a>
+                <a href="{{ url_for('admin.permission_management') }}" class="btn btn-secondary">Permission Management</a>
+            </div>
+            <div>
+                <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Dashboard</a>
             </div>
         </div>
-        <button type="submit" class="login-button" style="margin-top:1.5rem;">Update Permissions</button>
-        {% endif %}
-    </form>
-</div>
-{% endblock %} 
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('role-permissions')">Role Permissions</div>
+            <div class="tab" onclick="showTab('user-management')">User Management</div>
+        </div>
+
+        <!-- Role Permissions Tab -->
+        <div id="role-permissions" class="tab-content active">
+            <div class="section">
+                <h2 class="section-title">Assign Permissions to Roles</h2>
+                <p>Select a role and assign the appropriate Maxx Energy permissions:</p>
+                
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    
+                    <div class="form-group">
+                        <label for="role_id">Select Role:</label>
+                        <select id="role_id" name="role_id" required onchange="updateRoleInfo()">
+                            <option value="">Choose a role...</option>
+                            {% for role in roles %}
+                            <option value="{{ role.id }}" data-name="{{ role.name }}" data-description="{{ role.description }}">
+                                {{ role.name|title }} - {{ role.description }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div id="role-info" class="role-info" style="display: none;">
+                        <div class="role-name" id="selected-role-name"></div>
+                        <div class="role-description" id="selected-role-description"></div>
+                        <div id="current-permissions" class="current-permissions" style="display: none;">
+                            <strong>Current Permissions:</strong> <span id="current-permissions-list"></span>
+                        </div>
+                    </div>
+
+                    <div class="permissions-section">
+                        <h3 style="color: #496DA7; margin-bottom: 1rem;">Maxx Energy Permissions</h3>
+                        <p>Select the permissions you want to assign to this role:</p>
+                        
+                        <div class="permissions-grid">
+                            {% for permission in permissions %}
+                            <div class="permission-item">
+                                <input type="checkbox" 
+                                       id="perm_{{ permission.id }}" 
+                                       name="permissions" 
+                                       value="{{ permission.id }}"
+                                       class="permission-checkbox">
+                                <div>
+                                    <div class="permission-name">{{ permission.name|replace('_', ' ')|title }}</div>
+                                    <div class="permission-description">{{ permission.description }}</div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 2rem;">
+                        <button type="submit" class="btn btn-success">Save Permissions</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- User Management Tab -->
+        <div id="user-management" class="tab-content">
+            <div class="user-management-section">
+                <h2 class="section-title">User Management</h2>
+                <p>Manage users and their role assignments:</p>
+                
+                <div style="margin-bottom: 1rem;">
+                    <a href="{{ url_for('admin.user_management') }}" class="btn btn-success">Go to User Management</a>
+                    <a href="{{ url_for('admin.role_management') }}" class="btn btn-primary">Go to Role Management</a>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
+                    <h4 style="color: #496DA7; margin-bottom: 0.5rem;">Quick Actions:</h4>
+                    <ul style="margin: 0; padding-left: 1.5rem;">
+                        <li>Add new users with specific roles</li>
+                        <li>Edit existing user roles</li>
+                        <li>Assign permissions to individual users</li>
+                        <li>View user permission status</li>
+                        <li>Manage user accounts (activate/deactivate)</li>
+                    </ul>
+                </div>
+
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; color: #856404; padding: 1rem; border-radius: 6px;">
+                    <strong>Note:</strong> Changes to role permissions will automatically apply to all users with that role. 
+                    For individual user permission changes, use the User Management section.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function updateRoleInfo() {
+            const select = document.getElementById('role_id');
+            const roleInfo = document.getElementById('role-info');
+            const roleName = document.getElementById('selected-role-name');
+            const roleDescription = document.getElementById('selected-role-description');
+            const currentPermissions = document.getElementById('current-permissions');
+            const currentPermissionsList = document.getElementById('current-permissions-list');
+
+            if (select.value) {
+                const selectedOption = select.options[select.selectedIndex];
+                const roleNameText = selectedOption.getAttribute('data-name');
+                const roleDescriptionText = selectedOption.getAttribute('data-description');
+                
+                roleName.textContent = roleNameText.charAt(0).toUpperCase() + roleNameText.slice(1);
+                roleDescription.textContent = roleDescriptionText;
+                roleInfo.style.display = 'block';
+                
+                // Here you could fetch current permissions for the selected role via AJAX
+                // For now, we'll show a placeholder
+                currentPermissions.style.display = 'block';
+                currentPermissionsList.textContent = 'Loading...';
+            } else {
+                roleInfo.style.display = 'none';
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('role_id').value = '';
+            document.getElementById('role-info').style.display = 'none';
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+
+        // Add interactivity to permission items
+        document.querySelectorAll('.permission-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.type !== 'checkbox') {
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    checkbox.checked = !checkbox.checked;
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

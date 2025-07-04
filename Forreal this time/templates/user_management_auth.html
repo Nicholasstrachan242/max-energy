@@ -68,7 +68,7 @@
 <body>
     <div class="auth-container">
         <h2>Admin Re-Authentication</h2>
-        <form method="POST" action="{{ url_for('user_management_auth') }}">
+        <form method="POST" action="{{ url_for('admin.user_management_auth') }}">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <div class="form-group">
                 <label for="username">Admin Username</label>

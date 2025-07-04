@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permission Management - Maxx Energy</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #496DA7 0%, #FBB019 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 2rem;
+        }
+        .container {
+            background: #fff;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: 12px;
+            box-shadow: 0 0 24px #496DA744;
+            padding: 2.5rem 2rem;
+        }
+        h1 {
+            color: #496DA7;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.2s;
+            margin: 0 0.5rem;
+        }
+        .btn-primary {
+            background: #496DA7;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: #3a5a8a;
+        }
+        .btn-success {
+            background: #FBB019;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #d89200;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: #fff;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            border-bottom-color: #496DA7;
+            color: #496DA7;
+            font-weight: bold;
+        }
+        .tab:hover {
+            background: #f8f9fa;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        .section-title {
+            color: #496DA7;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #496DA7;
+            margin-bottom: 0.5rem;
+        }
+        .card-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .permission-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .permission-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.9rem;
+        }
+        .permission-list li:last-child {
+            border-bottom: none;
+        }
+        .permission-count {
+            background: #FBB019;
+            color: #fff;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .user-count {
+            background: #496DA7;
+            color: #fff;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .action-buttons {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+        .flash-messages {
+            margin-bottom: 1rem;
+        }
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #496DA7, #FBB019);
+            color: #fff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Maxx Energy Permission Management</h1>
+        
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+            <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="header-actions">
+            <div>
+                <a href="{{ url_for('admin.role_management') }}" class="btn btn-secondary">Role Management</a>
+                <a href="{{ url_for('admin.user_management') }}" class="btn btn-secondary">User Management</a>
+            </div>
+            <div>
+                <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Dashboard</a>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ roles|length }}</div>
+                <div class="stat-label">Roles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ users|length }}</div>
+                <div class="stat-label">Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ permissions|length }}</div>
+                <div class="stat-label">Permissions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ audit_logs|length }}</div>
+                <div class="stat-label">Recent Actions</div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('roles')">Role Permissions</div>
+            <div class="tab" onclick="showTab('users')">User Permissions</div>
+            <div class="tab" onclick="showTab('permissions')">All Permissions</div>
+            <div class="tab" onclick="showTab('audit')">Audit Log</div>
+        </div>
+
+        <!-- Roles Tab -->
+        <div id="roles" class="tab-content active">
+            <div class="section">
+                <h2 class="section-title">Role Permission Overview</h2>
+                <div class="grid">
+                    {% for role in roles %}
+                    <div class="card">
+                        <div class="card-title">
+                            {{ role.name|title }}
+                            <span class="permission-count">{{ role.permissions|length }} perms</span>
+                        </div>
+                        <div class="card-subtitle">{{ role.description }}</div>
+                        {% if role.permissions %}
+                        <ul class="permission-list">
+                            {% for permission in role.permissions[:5] %}
+                            <li>{{ permission.name|replace('_', ' ')|title }}</li>
+                            {% endfor %}
+                            {% if role.permissions|length > 5 %}
+                            <li><em>... and {{ role.permissions|length - 5 }} more</em></li>
+                            {% endif %}
+                        </ul>
+                        {% else %}
+                        <p style="color: #666; font-style: italic;">No permissions assigned</p>
+                        {% endif %}
+                        <div class="action-buttons">
+                            <a href="{{ url_for('admin.assign_role_permissions', role_id=role.id) }}" class="btn btn-success btn-sm">Assign Permissions</a>
+                            <a href="{{ url_for('admin.role_management') }}" class="btn btn-primary btn-sm">Edit Role</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Tab -->
+        <div id="users" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">User Permission Overview</h2>
+                <div class="grid">
+                    {% for user in users %}
+                    <div class="card">
+                        <div class="card-title">
+                            {{ user.username }}
+                            <span class="user-count">{{ user.role.name|title }}</span>
+                        </div>
+                        <div class="card-subtitle">Role: {{ user.role.description }}</div>
+                        {% if user.role.permissions %}
+                        <ul class="permission-list">
+                            {% for permission in user.role.permissions[:5] %}
+                            <li>{{ permission.name|replace('_', ' ')|title }}</li>
+                            {% endfor %}
+                            {% if user.role.permissions|length > 5 %}
+                            <li><em>... and {{ user.role.permissions|length - 5 }} more</em></li>
+                            {% endif %}
+                        </ul>
+                        {% else %}
+                        <p style="color: #666; font-style: italic;">No permissions assigned</p>
+                        {% endif %}
+                        <div class="action-buttons">
+                            <a href="{{ url_for('admin.assign_user_permissions', user_id=user.id) }}" class="btn btn-success btn-sm">Assign Permissions</a>
+                            <a href="{{ url_for('admin.assign_role_permissions', role_id=user.role.id) }}" class="btn btn-primary btn-sm">Edit Role</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Permissions Tab -->
+        <div id="permissions" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">All Maxx Energy Permissions</h2>
+                <div class="grid">
+                    {% for permission in permissions %}
+                    <div class="card">
+                        <div class="card-title">{{ permission.name|replace('_', ' ')|title }}</div>
+                        <div class="card-subtitle">{{ permission.description }}</div>
+                        {% if permission.roles %}
+                        <p><strong>Assigned to roles:</strong></p>
+                        <ul class="permission-list">
+                            {% for role in permission.roles %}
+                            <li>{{ role.name|title }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% else %}
+                        <p style="color: #666; font-style: italic;">Not assigned to any roles</p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Audit Tab -->
+        <div id="audit" class="tab-content">
+            <div class="section">
+                <h2 class="section-title">Recent Audit Log</h2>
+                {% if audit_logs %}
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f8f9fa;">
+                                <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #ddd;">Timestamp</th>
+                                <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #ddd;">Admin</th>
+                                <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #ddd;">Action</th>
+                                <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #ddd;">Target</th>
+                                <th style="padding: 1rem; text-align: left; border-bottom: 1px solid #ddd;">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in audit_logs %}
+                            <tr>
+                                <td style="padding: 1rem; border-bottom: 1px solid #f0f0f0;">{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td style="padding: 1rem; border-bottom: 1px solid #f0f0f0;">{{ log.admin_username }}</td>
+                                <td style="padding: 1rem; border-bottom: 1px solid #f0f0f0;">{{ log.action|replace('_', ' ')|title }}</td>
+                                <td style="padding: 1rem; border-bottom: 1px solid #f0f0f0;">{{ log.target|replace('_', ' ')|title }}</td>
+                                <td style="padding: 1rem; border-bottom: 1px solid #f0f0f0;">{{ log.details }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p style="color: #666; text-align: center; font-style: italic;">No audit logs available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html> 

@@ -88,42 +88,42 @@
 >
     <nav style="display: flex; justify-content: flex-end; gap: 1.5rem; padding: 1rem 2rem; background: #496DA7; color: #fff;">
         {% if session['role'] == 'admin' %}
-            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
-            <a href="{{ url_for('role_management') }}" style="color:#fff;">Role Management</a>
-            <a href="{{ url_for('assign_permissions_admin') }}" style="color:#fff;">Assign Permissions</a>
-            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+            <a href="{{ url_for('main.dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="{{ url_for('admin.role_management') }}" style="color:#fff;">Role Management</a>
+            <a href="{{ url_for('admin.assign_permissions_admin') }}" style="color:#fff;">Assign Permissions</a>
+            <a href="{{ url_for('auth.logout') }}" style="color:#fff;">Logout</a>
         {% elif session['role'] == 'executive' %}
-            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="{{ url_for('main.dashboard') }}" style="color:#fff;">Dashboard</a>
             <a href="#" style="color:#fff;">Executive Reports</a>
-            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+            <a href="{{ url_for('auth.logout') }}" style="color:#fff;">Logout</a>
         {% elif session['role'] == 'manager' %}
-            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="{{ url_for('main.dashboard') }}" style="color:#fff;">Dashboard</a>
             <a href="#" style="color:#fff;">Manage Team</a>
             <a href="#" style="color:#fff;">View Reports</a>
-            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+            <a href="{{ url_for('auth.logout') }}" style="color:#fff;">Logout</a>
         {% elif session['role'] == 'staff' %}
-            <a href="{{ url_for('dashboard') }}" style="color:#fff;">Dashboard</a>
+            <a href="{{ url_for('main.dashboard') }}" style="color:#fff;">Dashboard</a>
             <a href="#" style="color:#fff;">My Tasks</a>
-            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+            <a href="{{ url_for('auth.logout') }}" style="color:#fff;">Logout</a>
         {% elif session['role'] == 'guest' %}
-            <a href="{{ url_for('home') }}" style="color:#fff;">Home</a>
-            <a href="{{ url_for('logout') }}" style="color:#fff;">Logout</a>
+            <a href="{{ url_for('main.home') }}" style="color:#fff;">Home</a>
+            <a href="{{ url_for('auth.logout') }}" style="color:#fff;">Logout</a>
         {% else %}
-            <a href="{{ url_for('login') }}" style="color:#fff;">Login</a>
+            <a href="{{ url_for('auth.login') }}" style="color:#fff;">Login</a>
         {% endif %}
     </nav>
     <div class="dashboard-container">
         <h1>Welcome, {{ session['username'] }}!</h1>
         <p>This is your dashboard.</p>
         {% if session['role'] == 'admin' %}
-            <a href="{{ url_for('user_management_auth') }}" class="btn btn-primary" style="margin-bottom:1.5rem;display:inline-block;">User Management</a>
+            <a href="{{ url_for('admin.user_management_auth') }}" class="btn btn-primary" style="margin-bottom:1.5rem;display:inline-block;">User Management</a>
         {% endif %}
         <div style="margin-top:2rem;">
             {% if 'manage_users' in user_permissions %}
-                <a href="{{ url_for('role_management') }}" class="btn btn-primary">User & Role Management</a><br><br>
+                <a href="{{ url_for('admin.role_management') }}" class="btn btn-primary">User & Role Management</a><br><br>
             {% endif %}
             {% if 'manage_permissions' in user_permissions %}
-                <a href="{{ url_for('assign_permissions_admin') }}" class="btn btn-primary">Assign Permissions</a><br><br>
+                <a href="{{ url_for('admin.assign_permissions_admin') }}" class="btn btn-primary">Assign Permissions</a><br><br>
             {% endif %}
             {% if 'manage_team' in user_permissions %}
                 <a href="#" class="btn btn-primary">Manage Team</a><br><br>

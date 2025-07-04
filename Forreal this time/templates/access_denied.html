@@ -74,11 +74,11 @@
             You do not have permission to access this page or your account is not recognized in the MAXX ENERGY system.<br>
             Please contact your administrator if you believe this is a mistake.<br><br>
             {% if session.get('role') in ['admin', 'executive', 'manager', 'staff'] %}
-                <a href="{{ url_for('dashboard') }}" class="reroute-link">Go to Dashboard</a>
+                <a href="{{ url_for('main.dashboard') }}" class="reroute-link">Go to Dashboard</a>
             {% elif session.get('role') == 'guest' %}
-                <a href="{{ url_for('home') }}" class="reroute-link">Go to Home</a>
+                <a href="{{ url_for('main.home') }}" class="reroute-link">Go to Home</a>
             {% else %}
-                <a href="{{ url_for('login') }}" class="reroute-link">Back to Login</a>
+                <a href="{{ url_for('auth.login') }}" class="reroute-link">Back to Login</a>
             {% endif %}
         </div>
     </div>
