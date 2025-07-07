@@ -6,7 +6,7 @@
 # Test 3: Test that a logged in user can log out.
 # Test 4: Test that a protected page redirects to login page if user is not logged in.
 
-import pytest
+import pytest, re
 from app import db
 from app.models.User import User
 
@@ -41,8 +41,11 @@ def remove_test_user():
     db.session.commit()
 
 def login(client, email, password):
+
     return client.post("/auth/login",
-                       data={"email": email, "password": password},
+                       data={"email": email, 
+                             "password": password, 
+                        },
                        follow_redirects=True
                     )
 
