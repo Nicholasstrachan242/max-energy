@@ -24,6 +24,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+
     env:
       APP_ENV: test
       DATABASE_URL: 'mysql+pymysql://test_user:test_pass@127.0.0.1:3306/test_db'
@@ -35,6 +36,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Wait for MySQL
+        run: |
+          for i in {1..30}; do
+            if mysqladmin ping -h "$DB_HOST" -P "$DB_PORT" -u"$DB_USER" -p"$DB_PASS" --silent; then
+              echo "MySQL is ready."
+              break
+            fi
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
+      - name: Reset test database
+        run: |
+          mysql -h "$DB_HOST" -P "$DB_PORT" -u"$DB_USER" -p"$DB_PASS" -e "DROP DATABASE IF EXISTS $DB_NAME; CREATE DATABASE $DB_NAME;"
 
       - name: Set up Python
         uses: actions/setup-python@v4
