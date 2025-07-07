@@ -1,5 +1,6 @@
 # User model for the database
 
+from flask import current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
@@ -25,7 +26,7 @@ import hashlib
 # hashlib's SHA-256 used for deterministic (same input -> same output), fast, unsalted hashing of emails.
 
 def get_fernet():
-    key = os.environ.get('EMAIL_ENCRYPTION_KEY')
+    key = current_app.config.get('EMAIL_ENCRYPTION_KEY')
     if not key:
         raise RuntimeError("EMAIL_ENCRYPTION_KEY is not set in environment variables.")
     return Fernet(key.encode())

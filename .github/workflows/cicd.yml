@@ -74,25 +74,26 @@ jobs:
       - name: Test with pytest
         run: pytest
 
-  deploy:
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-          port: 22
-          script: |
-            cd /var/www/max-energy
-            git pull origin main
-            source .venv/bin/activate
-            pip install -r requirements.txt
-            flask db upgrade
-            sudo systemctl restart max-energy_gunicorn.service
+  #  deploy:
+  #  needs: build-and-test
+  #  runs-on: ubuntu-latest
+  #  if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+  #
+  #  steps:
+  #    - uses: actions/checkout@v4
+  #
+  #    - name: Deploy to server via SSH
+  #      uses: appleboy/ssh-action@v0.1.10
+  #      with:
+  #        host: ${{ secrets.SERVER_HOST }}
+  #        username: ${{ secrets.SERVER_USER }}
+  #        key: ${{ secrets.SERVER_SSH_KEY }}
+  #        port: 22
+  #        script: |
+  #          cd /var/www/max-energy
+  #          git pull origin main
+  #          source .venv/bin/activate
+  #          pip install -r requirements.txt
+  #          flask db upgrade
+  #          sudo systemctl restart max-energy_gunicorn.service
+  #
