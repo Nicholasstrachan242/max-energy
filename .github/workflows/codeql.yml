@@ -11,13 +11,9 @@
 #
 name: 'CodeQL Advanced'
 
+# Run CodeQL only on demand from the Actions tab in github
 on:
-  push:
-    branches: ['main']
-  pull_request:
-    branches: ['main']
-  schedule:
-    - cron: '00 22 * * 0'
+  workflow_dispatch:
 
 jobs:
   analyze:
