@@ -33,6 +33,8 @@ jobs:
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
       DB_NAME: test_db
+      SECRET_KEY: 'test_secret_key'
+      EMAIL_ENCRYPTION_KEY: 'test_email_key'
 
     steps:
       - uses: actions/checkout@v4
