@@ -86,7 +86,7 @@ def create_app(test_config=None):
             'SQLALCHEMY_TRACK_MODIFICATIONS': False,
             'WTF_CSRF_ENABLED': False, 
             'EMAIL_ENCRYPTION_KEY': 'dHuevh04hI1Pn0ITPXmkka_sn-o3-5R9hCNkG_XbAN4=', # for testing only
-            'SECRET_KEY': 'devkey' # used for csrf
+            'SECRET_KEY': 'devkey' # used for session & csrf
         })
 
     # allow test config to override default config
