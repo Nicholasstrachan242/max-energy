@@ -26,7 +26,7 @@ import hashlib
 # hashlib's SHA-256 used for deterministic (same input -> same output), fast, unsalted hashing of emails.
 
 def get_fernet():
-    key = current_app.config.get('EMAIL_ENCRYPTION_KEY')
+    key = os.environ.get('EMAIL_ENCRYPTION_KEY')
     if not key:
         raise RuntimeError("EMAIL_ENCRYPTION_KEY is not set in environment variables.")
     return Fernet(key.encode())
