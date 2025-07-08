@@ -92,6 +92,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: 22
           script: |
+            git config --global --add safe.directory /var/www/max-energy
             cd /var/www/max-energy
             git pull origin main
             source .venv/bin/activate
