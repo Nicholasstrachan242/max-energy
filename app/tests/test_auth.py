@@ -9,7 +9,9 @@
 import pytest, re
 from app import db
 from app.models.User import User
+from dotenv import load_dotenv
 
+load_dotenv(dotenv_path=".env.test")
 TEST_USER_EMAIL = 'testuser@test.com'
 TEST_USER_PASS = 'testpass'
 TEST_USER_FIRST = 'Test'
