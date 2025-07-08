@@ -66,8 +66,8 @@ def create_app(test_config=None):
             'SQLALCHEMY_TRACK_MODIFICATIONS': False,
 
             # Cookie settings
-            'SESSION_COOKIE_SECURE': True, # session cookie only uses https
-            'REMEMBER_COOKIE_SECURE': True, # remember me cookie only uses https
+            # 'SESSION_COOKIE_SECURE': True, # session cookie only uses https
+            # 'REMEMBER_COOKIE_SECURE': True, # remember me cookie only uses https
             'SESSION_COOKIE_HTTPONLY': True, # prevents JS from accessing session cookie
             'SESSION_COOKIE_SAMESITE': 'Lax', # helps prevent CSRF attacks
             'REMEMBER_COOKIE_HTTPONLY': True, # prevents JS from accessing remember me cookie
