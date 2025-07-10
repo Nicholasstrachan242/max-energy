@@ -11,7 +11,7 @@ from app.auth.forms import LoginForm, ChangePasswordForm
 from app.auth.auth_logging import log_auth_event
 from flask_login import LoginManager
 
-# auth.py handles all authentication events that occur within the app.
+# auth.py handles general login/logout authentication events and restricted routes within the app.
 
 # initialize and set up login manager
 login_manager = LoginManager()
