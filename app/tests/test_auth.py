@@ -1,12 +1,12 @@
-# Test authentication functionality here with local test database
+# Test core authentication functionality here
 
 # Test 1: Test that user CANNOT log in with invalid credentials. 
 # Test 2: Test that user CAN log in with valid credentials.
-# Make sure NO information is revealed about whether or not the user exists.
+#   - Make sure NO information is revealed about whether or not the user exists.
 # Test 3: Test that a logged in user can log out.
 # Test 4: Test that a protected page redirects to login page if user is not logged in.
 
-import pytest, re
+import pytest
 from app import db
 from app.models.User import User
 from dotenv import load_dotenv

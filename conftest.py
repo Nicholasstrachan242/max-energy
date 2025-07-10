@@ -2,6 +2,7 @@ import os
 import sys
 import pytest
 from app import create_app, db
+from flask import has_app_context
 
 # Get absolute path of project root directory
 project_root = os.path.dirname(os.path.abspath(__file__))
@@ -25,4 +26,5 @@ def client(app):
 @pytest.fixture(autouse=True)
 def cleanup_db_session():
     yield
-    db.session.rollback()
+    if has_app_context():
+        db.session.rollback()
