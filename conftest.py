@@ -1,4 +1,8 @@
 import os
+# load env variables
+from dotenv import load_dotenv
+load_dotenv(dotenv_path=".env.test")
+
 import sys
 import pytest
 from app import create_app, db
