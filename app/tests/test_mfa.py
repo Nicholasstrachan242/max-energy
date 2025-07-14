@@ -10,7 +10,6 @@
 # 7		Disabling MFA				Create user, enable MFA, then disable MFA and delete test user
 
 # Tests w/ logic were written here to get a grasp on pyotp syntax and functionality. 
-# TODO: Move the logic from the functions below into mfa.py and just call them here for the tests
 
 import pytest
 import pyotp

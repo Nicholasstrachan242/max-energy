@@ -1,0 +1,44 @@
+<!-- MFA page. Login page redirects to this page if user has MFA enabled. -->
+
+{% extends "base.html" %}
+{% block title %}Maxx Energy - MFA{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Flash messages for errors or info -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<div class="flash {{ category }}">{{ message }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="login-container">
+    <img src="{{ url_for('static', filename='images/maxx-gray-logo.png') }}" alt="Maxx Energy Logo" class="logo">
+    <div class="brand-header">Multifactor Authentication</div>
+    <form id="mfaForm" action="{{url_for('auth.mfa_login', next=request.args.get('next'))}}" method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.one_time_password.label }}
+            {{ form.one_time_password(
+            id="otp",
+            required=True,
+            autofocus=True,
+            maxlength=6,
+            pattern="\\d{6}",
+            autocomplete="one-time password"
+            ) }}
+            {% for error in form.one_time_password.errors %}
+            <span class="error-message">{{ error }}</span>
+            {% endfor %}
+        </div>
+        {{ form.submit(class="button") }}
+        {% if error %}
+        <p class="error-message">{{ error }}</p>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}
