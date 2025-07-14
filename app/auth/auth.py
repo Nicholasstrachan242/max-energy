@@ -219,7 +219,7 @@ def mfa_setup():
             current_user.mfa_secret = encrypted_secret
             current_user.mfa_enabled = True
             db.session.commit()
-            log_auth_event("MFA enabled", user_id=current_user.id)
+            log_auth_event("mfa_enabled", user_id=current_user.id)
             flash("Multi-factor authentication enabled successfully!", "info")
             return redirect(url_for("dashboard.dashboard_page"))
         else:

@@ -23,7 +23,7 @@ def main():
             print("User does not have MFA enabled on their account.")
             sys.exit(0)
         # confirm deactivation
-        confirm = input(f"Are you sure you want to disable MFA for the user {user.get_email()}? (y/n): ")
+        confirm = input(f"Are you sure you want to disable MFA for {user.get_email()}? (y/n): ")
         if confirm.lower() != 'y':
             print("Action cancelled.")
             sys.exit(0)
@@ -33,11 +33,11 @@ def main():
         user.mfa_secret = None
         db.session.commit()
         
-        print(f"MFA for user {user.get_email()} has been deactivated.")
+        print(f"MFA for {user.get_email()} has been deactivated.")
 
         # log the event
         try:
-            log_auth_event("user_mfa_disabled", user_id=user.id)
+            log_auth_event("mfa_disabled", user_id=user.id)
         except Exception as e:
             print(f"Failed to log auth event: {e}")
         
