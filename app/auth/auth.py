@@ -20,6 +20,14 @@ login_manager = LoginManager()
 def init_login_manager(app):
     login_manager.init_app(app)
 
+    login_manager.session_protection = "strong" # default is basic. 
+    # basic: 
+    # checks for matching session IDs, and if not matching, marks it as "non-fresh."
+    # anything requiring a "fresh" login will prompt user to reauthenticate
+
+    # strong:
+    # checks for matching session IDs, and if not matching, entire session is deleted.
+
     # set login view
     login_manager.login_view = "auth.login"
 
