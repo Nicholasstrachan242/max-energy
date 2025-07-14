@@ -150,6 +150,7 @@ def mfa_login():
 def logout():
     log_auth_event("logout", user_id=current_user.id)
     logout_user()
+    session.clear() # Delete all session data on logout
     flash("You have been logged out successfully.", "info")
     return redirect(url_for("auth.login"))
 
@@ -220,6 +221,7 @@ def mfa_setup():
             current_user.mfa_enabled = True
             db.session.commit()
             log_auth_event("mfa_enabled", user_id=current_user.id)
+            session.pop("mfa_secret", None) # ENSURES THAT SECRET IS REMOVED FROM SESSION AFTER USER IS FINISHED SETTING UP  
             flash("Multi-factor authentication enabled successfully!", "info")
             return redirect(url_for("dashboard.dashboard_page"))
         else:
