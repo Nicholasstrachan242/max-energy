@@ -209,9 +209,9 @@ def mfa_setup():
         otp = request.form.get("otp", "").strip()
 
         # testing if otp and totp are in sync
-        print("mfa secret after hitting submit:", session["mfa_secret"])
-        print("Server TOTP now:", totp.now())
-        print("User submitted OTP:", otp)
+        # print("mfa secret after hitting submit:", session["mfa_secret"])
+        # print("Server TOTP now:", totp.now())
+        # print("User submitted OTP:", otp)
 
         if mfa.verify_totp(totp, otp):
             # encrypt and save secret, enable MFA
@@ -220,8 +220,15 @@ def mfa_setup():
             current_user.mfa_secret = encrypted_secret
             current_user.mfa_enabled = True
             db.session.commit()
+
+            # log event
             log_auth_event("mfa_enabled", user_id=current_user.id)
-            session.pop("mfa_secret", None) # ENSURES THAT SECRET IS REMOVED FROM SESSION AFTER USER IS FINISHED SETTING UP  
+            # ENSURE THAT SECRET IS REMOVED FROM SESSION AFTER USER IS FINISHED SETTING UP
+            session.pop("mfa_secret", None)
+
+            # check session. It should NOT contain mfa_secret
+            # print("Session after pop:",dict(session))
+
             flash("Multi-factor authentication enabled successfully!", "info")
             return redirect(url_for("dashboard.dashboard_page"))
         else:
