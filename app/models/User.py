@@ -87,6 +87,9 @@ class User(UserMixin, db.Model):
     def is_active(self):
         return self.is_active_flag
     
+    def has_mfa_enabled(self):
+        return self.mfa_enabled
+    
     # return string representation of user. This would be the hashed email.
     def __repr__(self):
         return f'<User {self.email_hash}>'
