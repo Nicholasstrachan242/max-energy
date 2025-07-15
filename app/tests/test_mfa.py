@@ -83,8 +83,9 @@ def test_totp():
     # otp should successfully verify at exactly the test time
     assert mfa.verify_totp(totp, otp, for_time=test_time) is True
 
-    # otp should NOT verify after 30 seconds have passed
-    assert mfa.verify_totp(totp, otp, for_time=test_time + 30) is False
+    # otp should NOT verify after 60 seconds have passed
+    # default is 30s but window size is now 1, allowing 1 previous and 1 next password to be used
+    assert mfa.verify_totp(totp, otp, for_time=test_time + 60) is False
 
     # otp should NOT verify an incorrect code even at test time
     assert mfa.verify_totp(totp, "123456", for_time=test_time) is False
