@@ -31,9 +31,12 @@ td {
   }
 }
 
+.back-button {
+  float: left;
+}
+
 button,
 a.button {
-  float: left;
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 4px;

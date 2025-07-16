@@ -11,16 +11,56 @@
 
 {% block content %}
 <h2>Audit Log - Authentication Events</h2>
-<a href="{{ url_for('admin.admins_only') }}" class="button">Back to Admin Panel</a>
+<a href="{{ url_for('admin.admins_only') }}" class="button back-button">Back to Admin Panel</a>
 <div class="audit-table-container">
     <table class="audit-table">
         <thead>
             <tr>
-                <th>User ID</th>
-                <th>Event Type</th>
-                <th>Timestamp</th>
-                <th>IP Address</th>
-                <th>User Agent</th>
+                <th>
+                    <a
+                        href="{{ url_for('admin.audit_log', sort='user_id', direction='asc' if sort != 'user_id' or direction == 'desc' else 'desc', page=1) }}">
+                        User ID
+                        {% if sort == "user_id" %}
+                        {% if direction == "asc" %}▲{% else %}▼{% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th>
+                    <a
+                        href="{{ url_for('admin.audit_log', sort='event_type', direction='asc' if sort != 'event_type' or direction == 'desc' else 'desc', page=1) }}">
+                        Event Type
+                        {% if sort == "event_type" %}
+                        {% if direction == "asc" %}▲{% else %}▼{% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th>
+                    <a
+                        href="{{ url_for('admin.audit_log', sort='timestamp', direction='asc' if sort != 'timestamp' or direction == 'desc' else 'desc', page=1) }}">
+                        Timestamp <br>(Your Local Time)
+                        {% if sort == "timestamp" %}
+                        {% if direction == "asc" %}▲{% else %}▼{% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th>
+                    <a
+                        href="{{ url_for('admin.audit_log', sort='ip_address', direction='asc' if sort != 'ip_address' or direction == 'desc' else 'desc', page=1) }}">
+                        IP Address
+                        {% if sort == "ip_address" %}
+                        {% if direction == "asc" %}▲{% else %}▼{% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th>
+                    <a
+                        href="{{ url_for('admin.audit_log', sort='user_agent', direction='asc' if sort != 'user_agent' or direction == 'desc' else 'desc', page=1) }}">
+                        User Agent
+                        {% if sort == "user_agent" %}
+                        {% if direction == "asc" %}▲{% else %}▼{% endif %}
+                        {% endif %}
+                    </a>
+                </th>
                 <th>Details</th>
             </tr>
         </thead>
@@ -37,6 +77,17 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+<div class="pagination">
+    {% if pagination.has_prev %}
+    <a href="{{ url_for('admin.audit_log', page=pagination.prev_num, sort=sort, direction=direction)}}"
+        class="button">&laquo; Prev</a>
+    {% endif %}
+    Page {{ pagination.page }} of {{ pagination.pages }}
+    {% if pagination.has_next %}
+    <a href="{{ url_for('admin.audit_log', page=pagination.next_num, sort=sort, direction=direction)}}"
+        class="button">Next &raquo;</a>
+    {% endif %}
 </div>
 
 <!-- js added here. Uses DOM to show user's local timezone in table -->
