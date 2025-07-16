@@ -1,0 +1,54 @@
+/* audit-log.html stylesheet */
+
+.audit-table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  font-size: 1em;
+  background: #fff;
+}
+th {
+  padding: 0.75em 1em;
+  border: 1px solid #ddd;
+  text-align: left;
+  background: #f4f4f4;
+  font-weight: bold;
+}
+td {
+  padding: 0.75em 1em;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+@media (max-width: 600px) {
+  .audit-table th,
+  .audit-table td {
+    padding: 0.5em 0.5em;
+    font-size: 0.95em;
+  }
+}
+
+button,
+a.button {
+  float: left;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  background: #1976d2;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: normal;
+  text-decoration: none;
+}
+
+button:hover,
+a.button:hover {
+  background: #1256a0;
+}

@@ -44,7 +44,7 @@
             </div>
         </div>
 
-        {% if user.role == 'admin' %}
+        {% if current_user.role == 'admin' %}
         <div class="feature-box">
             <h3>Admin Panel</h3>
             <div class="feature-content">
@@ -54,7 +54,7 @@
         </div>
         {% endif %}
 
-        {% if user.role == 'employee' or user.role == 'admin'%}
+        {% if current_user.role == 'employee' or current_user.role == 'admin'%}
         <div class="feature-box">
             <h3>Employee Panel</h3>
             <div class="feature-content">
@@ -65,7 +65,7 @@
         </div>
         {% endif %}
 
-        {% if user.role == 'executive' or user.role == 'admin'%}
+        {% if current_user.role == 'executive' or current_user.role == 'admin'%}
         <div class="feature-box">
             <h3>Executive Panel</h3>
             <div class="feature-content">
@@ -74,7 +74,7 @@
         </div>
         {% endif %}
 
-        {% if user.role == 'manager' or user.role == 'executive' or user.role == 'admin'%}
+        {% if current_user.role == 'manager' or current_user.role == 'executive' or current_user.role == 'admin'%}
         <div class="feature-box">
             <h3>Manager Panel</h3>
             <div class="feature-content">

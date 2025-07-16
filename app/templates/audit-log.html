@@ -1,0 +1,58 @@
+<!-- A page showing audit logs in an interactive READ ONLY table (auth_events from db).
+ This page is to be accessible to admins only via the admin panel -->
+
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base.html" %}
+{% block title %}Audit Log{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='audit-log.css') }}">
+{% endblock %}
+
+{% block content %}
+<h2>Audit Log - Authentication Events</h2>
+<a href="{{ url_for('admin.admins_only') }}" class="button">Back to Admin Panel</a>
+<div class="audit-table-container">
+    <table class="audit-table">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Event Type</th>
+                <th>Timestamp</th>
+                <th>IP Address</th>
+                <th>User Agent</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in audit_events %}
+            <tr>
+                <td>{{ event.user_id}}</td>
+                <td>{{ event.event_type }}</td>
+                <td class="timestamp" data-utc="{{ event.timestamp.isoformat() }}">{{ event.timestamp }}</td>
+                <td>{{ event.ip }}</td>
+                <td>{{ event.user_agent }}</td>
+                <td>{{ event.details }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- js added here. Uses DOM to show user's local timezone in table -->
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".timestamp").forEach(function (td) {
+            // get UTC time as a string, then convert it to local
+            const utc = td.getAttribute("data-utc");
+            if (utc) {
+                const local = new Date(utc).toLocaleString();
+                td.textContent = local
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+
+</html>

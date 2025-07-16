@@ -1,6 +1,6 @@
 # Multifactor Authentication logic goes here.
 # using Time Based One Time Passwords
-# Users will be able to set up MFA using the authenticator app of their choice. (Google, Microsoft, Authy, etc.)
+# Users will be able to set up MFA using the authenticator app of their choice. (Google, Microsoft, 2FAS, Authy, etc.)
 
 import pyotp
 from cryptography.fernet import Fernet
@@ -36,8 +36,6 @@ def generate_uri(secret, email, issuer_name="Maxx Energy"):
 # valid_window allows codes from previous and next 30s window to be accepted
 def verify_totp(totp, otp, for_time=None, valid_window=1):
     return totp.verify(otp, for_time=for_time, valid_window=valid_window)
-
-# qrcode helper function
 
 # generate QR code as base64-encoded png
 def generate_qr_code(uri):

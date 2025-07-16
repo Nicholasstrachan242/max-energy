@@ -26,13 +26,13 @@ import hashlib
 # hashlib's SHA-256 used for deterministic (same input -> same output), fast, unsalted hashing of emails.
 
 def get_fernet():
-    key = os.environ.get('EMAIL_ENCRYPTION_KEY')
+    key = os.environ.get("EMAIL_ENCRYPTION_KEY")
     if not key:
         raise RuntimeError("EMAIL_ENCRYPTION_KEY is not set in environment variables.")
     return Fernet(key.encode())
 
 class User(UserMixin, db.Model):
-    __tablename__ = 'users'
+    __tablename__ = "users"
     
     id = db.Column(db.Integer, primary_key=True) # auto increments by default
     first_name = db.Column(db.String(50), nullable=False)

@@ -138,7 +138,10 @@ def mfa_login():
                 user.last_login = datetime.now(timezone.utc)
                 log_auth_event("login", user_id=user.id)
                 db.session.commit()
+                # clear user mfa user id, and set flags for mfa status
                 session.pop("mfa_user_id", None)
+                session["mfa_authenticated"] = True
+                session["mfa_authenticated_at"] = datetime.now(timezone.utc).isoformat()
                 next_page = request.args.get("next")
                 if next_page and is_safe_url(next_page):
                     return redirect(next_page)
@@ -151,6 +154,37 @@ def mfa_login():
             log_auth_event("failed_mfa", user_id=user.id, details=str(e))
 
     return render_template("mfa-login.html", form=form, error=error)
+
+# re-authenticate using OTP for logged in admins
+# this is used for access to admin-only routes such as the control panel and audit logs.
+@auth_bp.route("/mfa-reauth", methods=["GET", "POST"])
+@login_required
+def mfa_reauth():
+    form = MfaLoginForm()
+    error = None
+    if request.method == "POST":
+        otp = form.one_time_password.data.strip()
+        key = os.environ["MFA_KEY"].encode()
+        try:
+            decrypted_secret = mfa.decrypt_secret(current_user.mfa_secret, key)
+            totp = mfa.generate_totp(decrypted_secret)
+            # if OTP is valid, allow access
+            if mfa.verify_totp(totp, otp):
+                # set flags for mfa status
+                session["mfa_authenticated"] = True
+                session["mfa_authenticated_at"] = datetime.now(timezone.utc).isoformat()
+                log_auth_event("mfa_reauth", user_id=current_user.id)
+                next_page = request.args.get("next")
+                if next_page and is_safe_url(next_page):
+                    return redirect(next_page)
+                return redirect(url_for("admin.admins_only"))
+            else:
+                error = "Invalid code. Please try again."
+                log_auth_event("failed_mfa_reauth", user_id=current_user.id, details="Invalid OTP entered.")
+        except Exception as e:
+            error = "An error occurred during MFA verification."
+            log_auth_event("failed_mfa_reauth", user_id=current_user.id, details=str(e))
+    return render_template("mfa-reauth.html", form=form, error=error)
 
 # log out user + log event
 @auth_bp.route("/logout")
