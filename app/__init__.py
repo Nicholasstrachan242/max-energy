@@ -66,8 +66,8 @@ def create_app(test_config=None):
             'SQLALCHEMY_TRACK_MODIFICATIONS': False,
 
             # Cookie settings
-            'SESSION_COOKIE_SECURE': True, # session cookie only uses https
-            'REMEMBER_COOKIE_SECURE': True, # remember me cookie only uses https
+            # 'SESSION_COOKIE_SECURE': True, # session cookie only uses https
+            # 'REMEMBER_COOKIE_SECURE': True, # remember me cookie only uses https
             'SESSION_COOKIE_HTTPONLY': True, # prevents JS from accessing session cookie
             'SESSION_COOKIE_SAMESITE': 'Lax', # helps prevent CSRF attacks
             'REMEMBER_COOKIE_HTTPONLY': True, # prevents JS from accessing remember me cookie
@@ -84,7 +84,9 @@ def create_app(test_config=None):
             'SESSION_COOKIE_SECURE': False, # allow http in test
             'REMEMBER_COOKIE_SECURE': False, # allow http in test
             'SQLALCHEMY_TRACK_MODIFICATIONS': False,
-            'WTF_CSRF_ENABLED': True # since test site is no longer local-only, keep csrf protection on
+            'WTF_CSRF_ENABLED': False, 
+            'EMAIL_ENCRYPTION_KEY': 'dHuevh04hI1Pn0ITPXmkka_sn-o3-5R9hCNkG_XbAN4=', # for testing only
+            'SECRET_KEY': 'devkey' # used for session & csrf
         })
 
     # allow test config to override default config
@@ -92,7 +94,7 @@ def create_app(test_config=None):
         config.update(test_config)
 
     # check uri for testing
-    print("SQLALCHEMY_DATABASE_URI:", config['SQLALCHEMY_DATABASE_URI'])
+    # print("SQLALCHEMY_DATABASE_URI:", config['SQLALCHEMY_DATABASE_URI'])
 
     # pass in config
     app.config.from_mapping(config)

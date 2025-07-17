@@ -5,6 +5,12 @@
   margin: 20px 0;
 }
 
+/* Remove default bullets so only custom bullet is shown */
+.feature-list ul {
+  list-style: none;
+  padding-left: 0;
+}
+
 .feature-list li {
   background-color: #f8f9fa;
   margin: 1rem 0;

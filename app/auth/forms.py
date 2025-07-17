@@ -12,29 +12,35 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError, Regexp
 import re
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Log In')
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    password = PasswordField("Password", validators=[DataRequired()])
+    submit = SubmitField("Log In")
 
 class ChangePasswordForm(FlaskForm):
-    current_password= PasswordField('Current Password', validators=[DataRequired()])
-    new_password = PasswordField('New Password', validators=[DataRequired()])
-    confirm_new_password = PasswordField('Confirm New Password', validators=[
+    current_password= PasswordField("Current Password", validators=[DataRequired()])
+    new_password = PasswordField("New Password", validators=[DataRequired()])
+    confirm_new_password = PasswordField("Confirm New Password", validators=[
         DataRequired(),
-        EqualTo('new_password', message='Passwords must match.')])
-    submit = SubmitField('Change Password')
+        EqualTo("new_password", message="Passwords must match.")])
+    submit = SubmitField("Change Password")
 
     def validate_new_password(self, field):
         password = field.data
         if len(password) < 12:
-            raise ValidationError('Password must be at least 12 characters long.')
-        if not re.search(r'[A-Z]', password):
-            raise ValidationError('Password must contain at least one uppercase letter.')
-        if not re.search(r'\d', password):
-            raise ValidationError('Password must contain at least one number.')
+            raise ValidationError("Password must be at least 12 characters long.")
+        if not re.search(r"[A-Z]", password):
+            raise ValidationError("Password must contain at least one uppercase letter.")
+        if not re.search(r"\d", password):
+            raise ValidationError("Password must contain at least one number.")
         if not re.search(r'[!@#$%^&*(),.?":{}|<>_\-\\/\[\]=+;~`]', password):
-            raise ValidationError('Password must contain at least one symbol.')
+            raise ValidationError("Password must contain at least one symbol.")
+
+class MfaLoginForm(FlaskForm):
+    one_time_password=StringField("One-Time Password", validators=[
+        DataRequired(), 
+        Regexp(r"^\d{6}$", message="Code must be exactly 6 digits.")])
+    submit = SubmitField("Submit")

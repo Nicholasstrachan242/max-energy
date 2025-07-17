@@ -1,0 +1,94 @@
+/* audit-log.html stylesheet */
+
+.audit-table-container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 2em auto;
+  max-width: 75em;
+}
+
+.audit-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5em;
+  background: #fff;
+  font-size: 1em;
+}
+
+.audit-table caption {
+  margin-bottom: 1em;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.audit-table th,
+.audit-table td {
+  padding: 0.75em 0.5em;
+  border: 1px solid #3e4fe2;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.audit-table th {
+  background-color: #e2c20c;
+  color: #fff;
+  font-weight: normal;
+}
+
+.audit-table th:first-of-type {
+  text-align: left;
+}
+
+.audit-table td {
+  background: #fff;
+}
+
+.audit-table tr:nth-of-type(even) td {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 600px) {
+  .audit-table th,
+  .audit-table td {
+    padding: 0.5em 0.5em;
+    font-size: 0.95em;
+    display: block;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .audit-table thead {
+    display: none;
+  }
+  .audit-table tr {
+    margin-bottom: 1em;
+    display: block;
+    border-bottom: 2px solid #86bc25;
+  }
+}
+
+.back-button {
+  float: left;
+}
+
+button,
+a.button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  background: #1976d2;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: normal;
+  text-decoration: none;
+}
+
+button:hover,
+a.button:hover {
+  background: #1256a0;
+}
