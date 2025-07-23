@@ -18,7 +18,8 @@ def dashboard():
     if user.role.name in allowed_roles:
         session['role'] = user.role.name
         user_permissions = [perm.name for perm in user.role.permissions]
-        return render_template('dashboard.html', user_permissions=user_permissions)
+        # Pass user and role to the template
+        return render_template('dashboard.html', user=user, user_permissions=user_permissions)
     else:
         flash('Access denied.')
         return redirect(url_for('main.home'))
@@ -29,11 +30,11 @@ def home():
         user = User.query.filter_by(username=session['username']).first()
         if user and user.role.name == 'guest':
             session['role'] = user.role.name
-            return render_template('home.html')
+            return render_template('guest.home.html')
         else:
             return redirect(url_for('main.dashboard'))
-    return render_template('home.html')
+    return render_template('guest.home.html')
 
 @main_bp.route('/role-management')
 def role_management_redirect():
-    return redirect(url_for('admin.role_management')) 
+    return redirect(url_for('admin.role_management'))

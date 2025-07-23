@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Maxx Energy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('guest.home') }}" class="nav-link">Home</a>
+        <a href="{{ url_for('guest.info') }}" class="nav-link">Learn More</a>
+        <a href="{{ url_for('guest.contact') }}" class="nav-link">Contact Us</a>
+        <a href="{{ url_for('auth.logout') }}" class="nav-link logout">Log Out</a>
+    </nav>
+    <header class="contact-hero">
+        <h1>Contact Us</h1>
+    </header>
+    <section class="contact-placeholder">
+        <img src="{{ url_for('static', filename='images/solar panel drawing.png') }}" alt="Solar Panel Drawing" style="max-width: 320px; width: 100%; display: block; margin: 0 auto 1.5rem auto; background: #232b3a; border-radius: 10px; box-shadow: 0 2px 8px #0006;">
+        <p>Contact form coming soon! For inquiries, please email <a href="mailto:info@maxxenergy.com">info@maxxenergy.com</a>.</p>
+    </section>
+</body>
+</html> 

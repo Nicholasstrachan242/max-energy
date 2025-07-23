@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Maxx Energy - Solar Information</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('guest.home') }}" class="nav-link">Home</a>
+        <a href="{{ url_for('guest.info') }}" class="nav-link">Learn More</a>
+        <a href="{{ url_for('guest.contact') }}" class="nav-link">Contact Us</a>
+        <a href="{{ url_for('auth.logout') }}" class="nav-link logout">Log Out</a>
+    </nav>
+    <header class="info-hero">
+        <h1>Solar Generation at Maxx Energy</h1>
+    </header>
+    <section class="info-gallery">
+        <img src="{{ url_for('static', filename='images/percentage info.jpg') }}" alt="Percentage Info">
+        <img src="{{ url_for('static', filename='images/infogrphic.png') }}" alt="Infographic">
+        <img src="{{ url_for('static', filename='images/in office employee.png') }}" alt="In Office Employee">
+    </section>
+    <section class="info-facts">
+        <h2>Why Solar?</h2>
+        <ul>
+            <li>Solar energy is clean, renewable, and sustainable.</li>
+            <li>Maxx Energy's plants help reduce carbon emissions and support a greener future.</li>
+            <li>Our smart grid and innovative technology maximize energy efficiency.</li>
+        </ul>
+    </section>
+    <section class="cta">
+        <a href="{{ url_for('guest.contact') }}" class="cta-button">Contact Us</a>
+    </section>
+</body>
+</html> 

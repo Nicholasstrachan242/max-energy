@@ -76,7 +76,7 @@
             {% if session.get('role') in ['admin', 'executive', 'manager', 'staff'] %}
                 <a href="{{ url_for('main.dashboard') }}" class="reroute-link">Go to Dashboard</a>
             {% elif session.get('role') == 'guest' %}
-                <a href="{{ url_for('main.home') }}" class="reroute-link">Go to Home</a>
+                <a href="{{ url_for('guest.home') }}" class="reroute-link">Go to Home</a>
             {% else %}
                 <a href="{{ url_for('auth.login') }}" class="reroute-link">Back to Login</a>
             {% endif %}

@@ -1,0 +1,337 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    background: linear-gradient(135deg, #181f2a 0%, #222b3a 100%);
+    color: #e0e6ed;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+    z-index: 1;
+}
+.company-logo-watermark {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: url('images/BW maxx energy logo.png') center center/contain no-repeat;
+    opacity: 0.09;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    display: block;
+}
+/* Navigation Bar */
+.navbar {
+    width: 100%;
+    background: rgba(24,31,42,0.85);
+    box-shadow: 0 4px 24px rgba(25,118,210,0.08);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0.7rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    color: #e0e6ed;
+}
+.nav-link {
+    color: #f9a825;
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 2rem;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    transition: color 0.2s, background 0.2s, box-shadow 0.2s;
+    padding: 0.4rem 1.2rem;
+    border-radius: 20px;
+    background: rgba(32,40,56,0.2);
+}
+.nav-link:hover, .nav-link.active {
+    background: #f9a825;
+    color: #181f2a;
+    box-shadow: 0 2px 8px #f9a82544;
+}
+.nav-link.logout {
+    background: #1976d2;
+    color: #fff;
+    margin-left: 2rem;
+}
+.nav-link.logout:hover {
+    background: #f44336;
+    color: #fff;
+}
+
+/* Futuristic Hero Section */
+.hero-futuristic {
+    background: linear-gradient(120deg, #232b3a 0%, #181f2a 100%);
+    min-height: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(25,118,210,0.08);
+    color: #e0e6ed;
+}
+.hero-images {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 2rem;
+}
+.hero-img-left, .hero-img-right {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(25,118,210,0.12);
+    background: #fff;
+    opacity: 0.95;
+}
+.hero-content {
+    text-align: center;
+    z-index: 2;
+    padding: 1.5rem 2rem;
+    background: rgba(32,40,56,0.7);
+    border-radius: 18px;
+    box-shadow: 0 2px 12px #f9a82522;
+    margin: 0 1.5rem;
+    color: #f9a825;
+}
+.hero-content h1 {
+    font-size: 2.8rem;
+    letter-spacing: 2px;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 8px #000a;
+    color: #f9a825;
+}
+.hero-content .tagline {
+    font-size: 1.3rem;
+    color: #ffd54f;
+    margin-top: 0.5rem;
+}
+.logo {
+    width: 160px;
+    margin-bottom: 1rem;
+    background: rgba(255,255,255,0.8);
+    border-radius: 12px;
+    padding: 0.5rem 1rem;
+}
+.tagline {
+    font-size: 1.3rem;
+    color: #f9a825;
+    margin-top: 0.5rem;
+}
+.about, .gallery, .cta, .info-facts, .contact-placeholder {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.gallery-images, .info-gallery {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.gallery-images img, .info-gallery img {
+    width: 220px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    transition: transform 0.2s;
+}
+.gallery-images img:hover, .info-gallery img:hover {
+    transform: scale(1.05);
+}
+.cta {
+    text-align: center;
+}
+.cta-button {
+    display: inline-block;
+    background: #f9a825;
+    color: #181f2a;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 0.5rem;
+    transition: background 0.2s, color 0.2s;
+}
+.cta-button.secondary {
+    background: #1976d2;
+    color: #fff;
+}
+.cta-button:hover {
+    background: #ffd54f;
+    color: #181f2a;
+}
+.info-hero, .contact-hero {
+    background: linear-gradient(90deg, #f9a825 0%, #ffd54f 100%);
+    text-align: center;
+    padding: 2rem 1rem 1rem 1rem;
+    color: #fff;
+}
+.hero-logo-bg {
+    position: relative;
+    background: #222; /* fallback */
+    min-height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.hero-logo-bg::before {
+    content: "";
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 80%; height: 80%;
+    background: url('images/BW maxx energy logo.png') center/contain no-repeat;
+    opacity: 0.08; /* subtle watermark effect */
+    transform: translate(-50%, -50%);
+    z-index: 1;
+}
+.welcome-mission {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: rgba(32,40,56,0.85);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(249,168,37,0.07);
+    text-align: center;
+    color: #e0e6ed;
+}
+.welcome-mission h2 {
+    color: #f9a825;
+    margin-bottom: 0.5rem;
+}
+.welcome-mission h3 {
+    color: #1976d2;
+    margin-top: 1.5rem;
+}
+.solar-output-widget {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: rgba(32,40,56,0.85);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(25,118,210,0.07);
+    text-align: center;
+    color: #e0e6ed;
+}
+.solar-output-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #f9a825;
+    margin-bottom: 0.5rem;
+}
+.solar-output-desc {
+    color: #1976d2;
+    font-size: 1.1rem;
+}
+.sustainability-facts {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: rgba(32,40,56,0.85);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    text-align: center;
+    color: #e0e6ed;
+}
+.fact-rotator {
+    font-size: 1.2rem;
+    color: #388e3c;
+    min-height: 2.5em;
+    margin-top: 1rem;
+    transition: opacity 0.5s;
+}
+.testimonials {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: rgba(32,40,56,0.85);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(56,142,60,0.07);
+    text-align: center;
+    color: #e0e6ed;
+}
+.testimonial-rotator {
+    font-size: 1.1rem;
+    color: #1976d2;
+    min-height: 2.5em;
+    margin-top: 1rem;
+    font-style: italic;
+    transition: opacity 0.5s;
+}
+/* Info and Contact Page Readability */
+.info-hero, .contact-hero, .info-facts, .contact-placeholder, .info-gallery {
+    color: #232b3a;
+}
+.info-hero h1, .contact-hero h1, .info-facts h2, .contact-placeholder h2 {
+    color: #1976d2;
+}
+.nav-link, .cta-button {
+    color: #1976d2;
+}
+.cta-button.secondary {
+    color: #fff;
+}
+.info-gallery img {
+    background: #232b3a;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #0006;
+}
+.contact-placeholder a {
+    color: #f9a825;
+    text-decoration: underline;
+}
+.contact-placeholder a:hover {
+    color: #ffd54f;
+}
+.dashboard-2fa-setup {
+    margin: 1.5rem 0;
+}
+.btn.btn-warning {
+    background: #f9a825;
+    color: #232b3a;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+.btn.btn-warning:hover {
+    background: #ffd54f;
+    color: #181f2a;
+}
+@media (max-width: 700px) {
+    .gallery-images img, .info-gallery img {
+        width: 100%;
+        height: auto;
+    }
+    .about, .gallery, .cta, .info-facts, .contact-placeholder {
+        padding: 1rem;
+    }
+}
+@media (max-width: 900px) {
+    .hero-images {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .hero-img-left, .hero-img-right {
+        width: 120px;
+        height: 120px;
+    }
+    .hero-content {
+        padding: 1rem 0.5rem;
+        margin: 0;
+    }
+}

@@ -1,6 +1,6 @@
 import os
 import sys
-import pytest
+import pytest # type: ignore
 from app import create_app, db
 
 # Get absolute path of project root directory

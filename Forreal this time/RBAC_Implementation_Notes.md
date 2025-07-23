@@ -57,7 +57,7 @@ app/
 ```
 
 #### **2. Password Security**
-- **Hashing:** bcrypt-based password hashing
+- **Hashing:** bcrypt-based password hashing and salting
 - **Validation:** Strong password requirements
 - **Reset:** Secure password reset functionality
 

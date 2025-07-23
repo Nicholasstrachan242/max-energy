@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>2FA Setup - Maxx Energy</title>
+    <style>
+        .qr-container {
+            text-align: center;
+            margin: 2rem 0;
+        }
+        .qr-container img {
+            width: 220px;
+            height: 220px;
+            border: 4px solid #f9a825;
+            border-radius: 16px;
+            background: #fff;
+            box-shadow: 0 2px 12px #0002;
+        }
+        .secret-code {
+            font-size: 1.2rem;
+            color: #1976d2;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <h2>Set up Two-Factor Authentication</h2>
+    <div class="qr-container">
+        <p>Scan this QR code with your authenticator app (Google Authenticator, Authy, etc.):</p>
+        <img src="{{ qr_code }}" alt="2FA QR Code">
+    </div>
+    <div class="secret-code">
+        Or enter this code manually: <span>{{ secret }}</span>
+    </div>
+    <form method="POST" style="text-align:center;">
+        {{ csrf_token() }}
+        <label for="otp">Enter the 6-digit code from your authenticator app:</label><br>
+        <input type="text" name="otp" id="otp" required pattern="\\d{6}" maxlength="6"><br><br>
+        <button type="submit">Enable 2FA</button>
+    </form>
+    <div style="text-align:center; margin-top:1.5rem;">
+        <a href="{{ url_for('main.dashboard') }}">Back to Dashboard</a>
+    </div>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</body>
+</html>

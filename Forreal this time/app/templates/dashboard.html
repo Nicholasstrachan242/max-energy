@@ -76,6 +76,22 @@
             color: #666;
             line-height: 1.6;
         }
+        .dashboard-2fa-setup {
+            margin: 1.5rem 0;
+        }
+        .btn.btn-warning {
+            background: #f9a825;
+            color: #232b3a;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn.btn-warning:hover {
+            background: #ffd54f;
+            color: #181f2a;
+        }
     </style>
 </head>
 <body
@@ -106,7 +122,7 @@
             <a href="#" style="color:#fff;">My Tasks</a>
             <a href="{{ url_for('auth.logout') }}" style="color:#fff;">Logout</a>
         {% elif session['role'] == 'guest' %}
-            <a href="{{ url_for('main.home') }}" style="color:#fff;">Home</a>
+            <a href="{{ url_for('guest.home') }}" style="color:#fff;">Home</a>
             <a href="{{ url_for('auth.logout') }}" style="color:#fff;">Logout</a>
         {% else %}
             <a href="{{ url_for('auth.login') }}" style="color:#fff;">Login</a>
@@ -139,6 +155,13 @@
             {% endif %}
             {% if user_permissions|length == 0 %}
                 <p style="color:#888;">You have no special permissions. Please contact your administrator for access.</p>
+            {% endif %}
+            {% if user.role.name != 'guest' %}
+                <div class="dashboard-2fa-setup">
+                    <a href="{{ url_for('auth.twofa_setup') }}" class="btn btn-warning">
+                        Set up Two-Factor Authentication (2FA)
+                    </a>
+                </div>
             {% endif %}
         </div>
     </div>

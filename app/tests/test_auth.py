@@ -6,7 +6,7 @@
 # Test 3: Test that a logged in user can log out.
 # Test 4: Test that a protected page redirects to login page if user is not logged in.
 
-import pytest
+import pytest # type: ignore
 from app import db
 from app.models.User import User
 

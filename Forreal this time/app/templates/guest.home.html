@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Maxx Energy - Welcome</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="company-logo-watermark"></div>
+    <nav class="navbar">
+        <a href="{{ url_for('guest.home') }}" class="nav-link">Home</a>
+        <a href="{{ url_for('guest.info') }}" class="nav-link">Learn More</a>
+        <a href="{{ url_for('guest.contact') }}" class="nav-link">Contact Us</a>
+        <a href="{{ url_for('auth.logout') }}" class="nav-link logout">Log Out</a>
+    </nav>
+    <header class="hero hero-futuristic">
+        <div class="hero-images">
+            <img src="{{ url_for('static', filename='images/landscape employee.png') }}" alt="Landscape Employee" class="hero-img-left">
+            <div class="hero-content">
+                <h1>WELCOME TO MAXX ENERGY</h1>
+                <p class="tagline">Empowering communities with clean, sustainable solar energy.<br>Experience the future of power generation.</p>
+            </div>
+            <img src="{{ url_for('static', filename='images/solar powerline worker.png') }}" alt="Solar Powerline Worker" class="hero-img-right">
+        </div>
+    </header>
+    <section class="welcome-mission">
+        <h2>Welcome!</h2>
+        <p>We’re dedicated to powering a brighter, cleaner future through innovative solar plant generation. Join us as we lead the way in sustainable energy for tomorrow’s world.</p>
+        <h3>Our Mission</h3>
+        <p>Delivering reliable, sustainable, and affordable solar energy solutions that empower communities and protect our planet.</p>
+    </section>
+    <section class="solar-output-widget">
+        <h2>Live Solar Output</h2>
+        <div id="solar-output-value" class="solar-output-value">-- MW</div>
+        <div class="solar-output-desc">Current output from our solar plants</div>
+    </section>
+    <section class="sustainability-facts">
+        <h2>Sustainability Facts</h2>
+        <div id="fact-rotator" class="fact-rotator"></div>
+    </section>
+    <section class="testimonials">
+        <h2>What Our Partners Say</h2>
+        <div id="testimonial-rotator" class="testimonial-rotator"></div>
+    </section>
+    <section class="cta">
+        <a href="{{ url_for('guest.info') }}" class="cta-button">Learn More</a>
+        <a href="{{ url_for('guest.contact') }}" class="cta-button secondary">Contact Us</a>
+    </section>
+    <script>
+    // Live Solar Output Widget (mock, animated)
+    function animateSolarOutput() {
+        const el = document.getElementById('solar-output-value');
+        let value = (10 + Math.random() * 10).toFixed(2); // 10-20 MW
+        el.textContent = value + ' MW';
+    }
+    setInterval(animateSolarOutput, 2000);
+    animateSolarOutput();
+
+    // Sustainability Facts (auto-rotating)
+    const facts = [
+        'Solar energy produces zero direct emissions during operation.',
+        'The sun delivers more energy to Earth in one hour than the world uses in a year.',
+        'Solar panels can last 25–30 years with minimal maintenance.',
+        'Switching to solar can reduce your carbon footprint by up to 80%.',
+        'Solar power helps conserve water compared to traditional power plants.',
+        'The cost of solar energy has dropped by over 80% in the last decade.'
+    ];
+    let factIdx = 0;
+    function rotateFact() {
+        document.getElementById('fact-rotator').textContent = facts[factIdx];
+        factIdx = (factIdx + 1) % facts.length;
+    }
+    setInterval(rotateFact, 3500);
+    rotateFact();
+
+    // Testimonial Carousel (auto-rotating)
+    const testimonials = [
+        '“Maxx Energy helped us cut our energy bills in half!” — Sarah T., Homeowner',
+        '“Our business is now 100% solar-powered thanks to Maxx.” — GreenTech Inc.',
+        '“The installation was quick and the team was professional.” — John M., Facility Manager',
+        '“We’re proud to support clean energy with Maxx Energy’s help.” — City of Sunville',
+        '“Reliable, efficient, and sustainable—Maxx Energy delivers.” — EcoBuild Partners',
+        '“Our community is greener and brighter with Maxx solar.” — Linda R., Community Leader'
+    ];
+    let testimonialIdx = 0;
+    function rotateTestimonial() {
+        document.getElementById('testimonial-rotator').textContent = testimonials[testimonialIdx];
+        testimonialIdx = (testimonialIdx + 1) % testimonials.length;
+    }
+    setInterval(rotateTestimonial, 4000);
+    rotateTestimonial();
+    </script>
+</body>
+</html> 
